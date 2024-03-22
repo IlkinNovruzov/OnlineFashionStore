@@ -1,0 +1,165 @@
+﻿@using OnlineFashionStore.Models.ViewModels
+@model ProductViewModel
+<div class="d-flex justify-content-around">
+    <form asp-controller="Product" asp-action="Add" method="post" enctype="multipart/form-data" class="col-lg-8">
+        <div class="card">
+            <div class="card-header"><strong>Product</strong><small> Form</small></div>
+            <div class="card-body card-block">
+                <div class="form-group">
+                    <label asp-for="Product.Name" class=" form-control-label">Name</label>
+                    <input asp-for="Product.Name" type="text" placeholder="Name" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label asp-for="Product.Price" class="form-control-label">Price</label>
+                    <input type="text" asp-for="Product.Price" placeholder="Price" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label asp-for="Product.StockQuantity" class="form-control-label">Stock Quantity</label>
+                    <input type="text" asp-for="Product.StockQuantity" placeholder="Quantity" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label asp-for="Product.CategoryId" class="form-control-label">Select Category</label>
+                    <select asp-for="Product.CategoryId" id="select" class="form-control">
+                        <option value="0">Please select</option>
+                        @foreach (var item in ViewBag.Categories)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Product.BrandId" class="form-control-label">Select Brand</label>
+                    <select asp-for="Product.BrandId" id="select" class="form-control">
+                        <option value="0">Please select</option>
+                        @foreach (var item in ViewBag.Brands)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Product.Description" class=" form-control-label">Description</label>
+                    <input asp-for="Product.Description" type="text" placeholder="Description" class="form-control">
+                </div>
+                <label class="form-check-label" asp-for="Product.IsActive">Activation</label>
+                <div class="form-check form-switch fs-4">
+                    <input class="form-check-input" type="checkbox" asp-for="Product.IsActive" checked>
+                </div><br />
+
+                @foreach (var item in ViewBag.Attributes as List<ProductAttribute>)
+                {
+                    <div class="form-group">
+                        <label>@item.Name</label>
+                        <select asp-for="AttributeValueIds" asp-items="@item.Values.Select(v => new SelectListItem { Value = v.Id.ToString(), Text = v.Value })" multiple class="form-control">
+                        </select>
+                    </div>
+                }
+
+                <div class="container">
+                    <label asp-for="ProductImages"> <i class="fa fa-upload"></i> &nbsp; Choose A Photo </label><br />
+                    <input type="file" id="file-input" asp-for="ProductImages" onchange="preview()" multiple>
+
+                    <p id="num-of-files">No Files Chosen</p>
+                    <div id="images" class="d-flex"></div>
+                </div>
+                <button type="submit" class="btn btn-lg btn-info btn-block">
+                    <span id="payment-button-amount">Add</span>
+                    <span id="payment-button-sending" style="display:none;">Sending…</span>
+                </button>
+            </div>
+        </div>
+    </form>
+
+
+    <style>
+        .form-img {
+            display: flex;
+            font-size: 1rem;
+            margin: 0 auto;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: column;
+            color: rgb(20, 20, 28);
+        }
+
+        .input-preview__src {
+            display: none;
+        }
+
+        .input-preview {
+            border: dashed black 0.175em;
+            border-radius: 0.5em;
+            width: 400px;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            position: relative;
+            transition: ease-in-out 750ms;
+        }
+
+            .input-preview::after {
+                position: absolute;
+                top: 50%;
+                left: 0;
+                width: 100%;
+                text-align: center;
+                transform: translateY(50%);
+                content: "Choose a file...";
+                font-style: italic;
+                font-size: 1em;
+            }
+
+        .has-image::before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(50, 50, 50, 0.5);
+            content: " ";
+            transition: ease-in-out 750ms;
+        }
+
+        .has-image::after {
+            content: "Choose another file...";
+            color: white;
+        }
+
+        figure {
+            margin: 0 8px;
+        }
+
+    </style>
+</div>
+@section scripts {
+
+    <script>
+        let fileInput = document.getElementById("file-input");
+        let imageContainer = document.getElementById("images");
+        let numOfFiles = document.getElementById("num-of-files");
+
+        function preview() {
+            imageContainer.innerHTML = "";
+            numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
+
+            for (i of fileInput.files) {
+                let reader = new FileReader();
+                let figure = document.createElement("figure");
+                let figCap = document.createElement("figcaption");
+                figCap.innerText = i.name;
+                figure.appendChild(figCap);
+                reader.onload = () => {
+                    let img = document.createElement("img");
+                    img.setAttribute("src", reader.result);
+                    figure.insertBefore(img, figCap);
+                }
+                imageContainer.appendChild(figure);
+                reader.readAsDataURL(i);
+            }
+        }
+    </script>
+}

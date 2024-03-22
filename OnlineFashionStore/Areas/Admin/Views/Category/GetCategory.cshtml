@@ -1,0 +1,93 @@
+﻿@model List<Category>
+
+<div class="breadcrumbs">
+    <div class="breadcrumbs-inner">
+        <div class="row m-0">
+            <div class="col-sm-4">
+                <div class="page-header float-left">
+                    <div class="page-title">
+                        <h1>Dashboard</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-8">
+                <div class="page-header float-right">
+                    <div class="page-title">
+                        <ol class="breadcrumb text-right">
+                            <li><a href="#">Dashboard</a></li>
+                            <li><a href="#">Table</a></li>
+                            <li class="active">Data table</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row">
+
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <strong class="card-title">Data Table</strong>
+                        <a asp-area="Admin" asp-controller="Category" asp-action="Add" class="btn btn-primary">Add Category</a>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            @foreach (var category in Model.Where(c => c.ParentId == null))
+                            {
+                                <li class="list-group-item fs-5">
+                                    @category.Name
+                                    <a href="Edit/@category.Id"><i class="fa fa-pencil ms-4"></i></a>
+                                    <a href="Delete/@category.Id"><i class="fa fa-trash ms-2"></i></a>
+
+                                    @GetSubcategories(category.Id)
+                                </li>
+                            }
+                        </ul>
+                        @{
+                            Category GetSubcategories(int parentId)
+                            {
+                                var subcategories = Model.Where(c => c.ParentId == parentId);
+                                if (subcategories.Any())
+                                {
+                                    <ul class="list-group">
+                                        @foreach (var subcategory in subcategories)
+                                        {
+                                            <li class="list-group-item fs-5 ms-4">
+                                                @subcategory.Name
+                                                <a href="Edit/@subcategory.Id"><i class="fa fa-pencil ms-4"></i></a>
+
+                                                <a href="Delete/@subcategory.Id"><i class="fa fa-trash ms-2"></i></a>
+
+                                                @GetSubcategories(subcategory.Id)
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                                return null;
+                            }
+                        }
+                    </div>
+                </div>
+                <ul class="nav navbar-nav">
+
+                    <li class="menu-item-has-children dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="menu-icon fa fa-cogs"></i>Components</a>
+                        <ul class="sub-menu children dropdown-menu">
+                            <li>Fruit</li>
+                            <li>Fruit</li>
+                            <li>Fruit</li>
+                            <li>Fruit</li>
+                            <li>Fruit</li>
+                            <li>Fruit</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+    </div><!-- .animated -->
+</div><!-- .content -->
