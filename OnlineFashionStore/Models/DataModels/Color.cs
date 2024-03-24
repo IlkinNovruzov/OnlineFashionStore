@@ -9,7 +9,9 @@ namespace OnlineFashionStore.Models.DataModels
 
         [Required]
         public string Name { get; set; }
-
-        public List<Product> Products { get; set; }
+        [Required]
+        public string Code { get; set; }
+        public bool IsActive { get; set; }
+        public List<ProductColor> ProductColors { get; set; }
     }
 }

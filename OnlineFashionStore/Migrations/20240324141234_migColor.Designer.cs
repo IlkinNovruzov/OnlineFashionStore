@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OnlineFashionStore.Models;
 
@@ -11,9 +12,11 @@ using OnlineFashionStore.Models;
 namespace OnlineFashionStore.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240324141234_migColor")]
+    partial class migColor
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,21 @@ namespace OnlineFashionStore.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("ColorProduct", b =>
+                {
+                    b.Property<int>("ColorsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ColorsId", "ProductsId");
+
+                    b.HasIndex("ProductsId");
+
+                    b.ToTable("ColorProduct");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
                 {
@@ -256,16 +274,16 @@ namespace OnlineFashionStore.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a08b4754-e869-4432-8b5a-01c6e45ec456",
+                            ConcurrencyStamp = "b37ac15b-b3ca-49d1-b719-de26fc2958ef",
                             Email = "inovruzov2004@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             Name = "Ilkin",
                             NormalizedEmail = "INOVRUZOV2004@GMAIL.COM",
                             NormalizedUserName = "ILKIN.ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIaUyQYsXKBggfAXC/gteYIW5VyJCLqOBtPsV+Nk0+cOrkMwXHT9ZHCBAA8phtRx7Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIAWfX69AXP6pjxQxvSowwzw40bXEoqfNUfBv+3LV21766JcSMq4yyrnePAKUw9dWA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d1f37dc8-e42f-4fe2-959e-f8d1757e3422",
+                            SecurityStamp = "aa4ec840-09ef-4fdf-990b-769d24387d12",
                             Surname = "Novruzov",
                             TwoFactorEnabled = false,
                             UserName = "ilkin.admin"
@@ -438,19 +456,21 @@ namespace OnlineFashionStore.Migrations
                     b.ToTable("ProductAttributes");
                 });
 
-            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.ProductColor", b =>
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Size", b =>
                 {
-                    b.Property<int>("ProductId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<int>("ColorId")
-                        .HasColumnType("int");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.HasKey("ProductId", "ColorId");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.HasIndex("ColorId");
+                    b.HasKey("Id");
 
-                    b.ToTable("ProductColors");
+                    b.ToTable("Sizes");
                 });
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Slider", b =>
@@ -498,6 +518,36 @@ namespace OnlineFashionStore.Migrations
                             Name = "Another Trend",
                             Title = "Winter Sale Fashionable"
                         });
+                });
+
+            modelBuilder.Entity("ProductSize", b =>
+                {
+                    b.Property<int>("ProductsId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SizesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductsId", "SizesId");
+
+                    b.HasIndex("SizesId");
+
+                    b.ToTable("ProductSize");
+                });
+
+            modelBuilder.Entity("ColorProduct", b =>
+                {
+                    b.HasOne("OnlineFashionStore.Models.DataModels.Color", null)
+                        .WithMany()
+                        .HasForeignKey("ColorsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineFashionStore.Models.DataModels.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<int>", b =>
@@ -601,23 +651,19 @@ namespace OnlineFashionStore.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.ProductColor", b =>
+            modelBuilder.Entity("ProductSize", b =>
                 {
-                    b.HasOne("OnlineFashionStore.Models.DataModels.Color", "Color")
-                        .WithMany("ProductColors")
-                        .HasForeignKey("ColorId")
+                    b.HasOne("OnlineFashionStore.Models.DataModels.Product", null)
+                        .WithMany()
+                        .HasForeignKey("ProductsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OnlineFashionStore.Models.DataModels.Product", "Product")
-                        .WithMany("ProductColors")
-                        .HasForeignKey("ProductId")
+                    b.HasOne("OnlineFashionStore.Models.DataModels.Size", null)
+                        .WithMany()
+                        .HasForeignKey("SizesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Color");
-
-                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Brand", b =>
@@ -630,18 +676,11 @@ namespace OnlineFashionStore.Migrations
                     b.Navigation("Products");
                 });
 
-            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Color", b =>
-                {
-                    b.Navigation("ProductColors");
-                });
-
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Product", b =>
                 {
                     b.Navigation("Attributes");
 
                     b.Navigation("Images");
-
-                    b.Navigation("ProductColors");
                 });
 #pragma warning restore 612, 618
         }

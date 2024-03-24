@@ -37,6 +37,16 @@
                         }
                     </select>
                 </div>
+                 <div class="form-group">
+                    <label asp-for="ColorIds" class="form-control-label">Select Colors</label>
+                    <select asp-for="ColorIds" id="select" class="form-control" multiple>
+                        <option value="0">Please select</option>
+                        @foreach (var item in ViewBag.Colors)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
                 <div class="form-group">
                     <label asp-for="Product.Description" class=" form-control-label">Description</label>
                     <input asp-for="Product.Description" type="text" placeholder="Description" class="form-control">
@@ -62,6 +72,24 @@
                     <p id="num-of-files">No Files Chosen</p>
                     <div id="images" class="d-flex"></div>
                 </div>
+                <div id="images" class="d-flex">
+                    @foreach (var imageFile in Model.ProductImages)
+                    {
+                        using (var stream = imageFile.OpenReadStream())
+                        {
+                            var memoryStream = new MemoryStream();
+                            await stream.CopyToAsync(memoryStream);
+                            var bytes = memoryStream.ToArray();
+                            var base64String = Convert.ToBase64String(bytes);
+
+                            <figure>
+                                <img src="data:image;base64,@base64String" alt="Product Image">
+                                <figcaption>@imageFile.FileName</figcaption>
+                            </figure>
+                        }
+                    }
+                </div>
+
                 <button type="submit" class="btn btn-lg btn-info btn-block">
                     <span id="payment-button-amount">Add</span>
                     <span id="payment-button-sending" style="display:none;">Sending…</span>

@@ -25,7 +25,7 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
         {
             ViewBag.Categories = _context.Categories.ToList();
             ViewBag.Brands = _context.Brands.ToList();
-           // ViewBag.Attributes = _context.ProductAttributes.Include(x=>x.Values).ToList();
+            ViewBag.Colors = _context.Colors.ToList();
             return View();
         }
 
@@ -87,6 +87,16 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
                     _context.Images.Add(productImage);
                 }
             }
+            foreach (var colorId in model.ColorIds)
+            {
+                var productColor = new ProductColor
+                {
+                    ProductId = model.Product.Id,
+                    ColorId = colorId
+                };
+                _context.ProductColors.Add(productColor);
+            }
+            
             //var attributes = _context.ProductAttributes.Include(a => a.Values).ToList();
             //foreach (var attribute in attributes)
             //{
@@ -98,7 +108,7 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
             //                IsActive = true,
             //                Values=selectedValues
             //            };
-                  
+
             //}
             _context.SaveChanges();
             return RedirectToAction("GetProduct");
@@ -118,6 +128,7 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
         {
             ViewBag.Categories = _context.Categories.ToList();
             ViewBag.Brands = _context.Brands.ToList();
+            ViewBag.Colors = _context.Colors.ToList();
 
             var product = _context.Products.Find(id);
             var images = _context.Images .Where(x => x.ProductId == id).Select(x=>x.ImageFile).ToList();
