@@ -25,10 +25,11 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
         {
             ViewBag.Categories = _context.Categories.ToList();
             ViewBag.Brands = _context.Brands.ToList();
-            ViewBag.Attributes = _context.ProductAttributes.Include(x=>x.Values).ToList();
+           // ViewBag.Attributes = _context.ProductAttributes.Include(x=>x.Values).ToList();
             return View();
         }
-        [HttpPost]
+
+        //[HttpPost]
         //public IActionResult AttributeAdd(List<Attribute> attributes)
         //{
 
@@ -86,19 +87,19 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
                     _context.Images.Add(productImage);
                 }
             }
-            var attributes = _context.ProductAttributes.Include(a => a.Values).ToList();
-            foreach (var attribute in attributes)
-            {
-                    var selectedValues = attribute.Values.Where(v => model.AttributeValueIds.Contains(v.Id)).ToList();
-                        var att = new ProductAttribute
-                        {
-                            Name = attribute.Name,
-                            ProductId = attribute.Id,
-                            IsActive = true,
-                            Values=selectedValues
-                        };
+            //var attributes = _context.ProductAttributes.Include(a => a.Values).ToList();
+            //foreach (var attribute in attributes)
+            //{
+            //        var selectedValues = attribute.Values.Where(v => model.AttributeValueIds.Contains(v.Id)).ToList();
+            //            var att = new ProductAttribute
+            //            {
+            //                Name = attribute.Name,
+            //                ProductId = attribute.Id,
+            //                IsActive = true,
+            //                Values=selectedValues
+            //            };
                   
-            }
+            //}
             _context.SaveChanges();
             return RedirectToAction("GetProduct");
         }

@@ -16,12 +16,12 @@ namespace OnlineFashionStore.Controllers
             _userManager = userManager;
             _signInManager = signInManager;
         }
-        public IActionResult Index()
+        public IActionResult SignIn()
         {
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Index(AppUserLogin appUserLogin)
+        public async Task<IActionResult> SignIn(AppUserLogin appUserLogin)
         {
             var result = await _signInManager.PasswordSignInAsync(appUserLogin.Username, appUserLogin.Password, false, true);
             if (result.Succeeded)

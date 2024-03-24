@@ -35,6 +35,17 @@ namespace OnlineFashionStore
             app.UseRouting();
 
             app.UseAuthorization();
+            app.Use(async (context, next) =>
+            {
+                if (!context.User.Identity.IsAuthenticated)
+                {
+                    // Kullan?c? oturum açmam??sa, iste?i i?lemeyi durdurabilir veya ba?ka bir sayfaya yönlendirebilirsiniz.
+                    context.Response.Redirect("/Account/Login");
+                    return;
+                }
+
+                await next();
+            });
 
             app.MapControllerRoute(
                 name: "Admin",

@@ -11,8 +11,10 @@ namespace OnlineFashionStore.Models.DataModels
         [Required]
         [StringLength(255)]
         public string Name { get; set; }
-
-        public List<AttributeValue> Values { get; set; }
+        [Required]
+        [StringLength(255)]
+        public string Value { get; set; }
+        [Required]
         public int ProductId { get; set; }
         public Product Product { get; set; }
         public bool IsActive { get; set; }

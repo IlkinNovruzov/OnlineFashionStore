@@ -2,7 +2,7 @@
 
 namespace OnlineFashionStore.Models.DataModels
 {
-    public class AppRole:IdentityRole
+    public class AppRole:IdentityRole<int>
     {
     }
 }

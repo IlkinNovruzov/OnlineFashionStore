@@ -35,6 +35,8 @@ namespace OnlineFashionStore.Models.DataModels
 
         public bool IsActive { get; set; }
 
+        public List<Size> Sizes { get; set; }
+        public List<Color> Colors { get; set; }
         public List<Image> Images { get; set; }
         public List<ProductAttribute> Attributes { get; set; }
 

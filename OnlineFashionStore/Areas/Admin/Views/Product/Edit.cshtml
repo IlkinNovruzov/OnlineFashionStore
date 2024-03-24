@@ -46,14 +46,14 @@
                     <input class="form-check-input" type="checkbox" asp-for="Product.IsActive" checked>
                 </div><br />
 
-                @foreach (var item in ViewBag.Attributes as List<ProductAttribute>)
+              @*   @foreach (var item in ViewBag.Attributes as List<ProductAttribute>)
                 {
                     <div class="form-group">
                         <label>@item.Name</label>
                         <select asp-for="AttributeValueIds" asp-items="@item.Values.Select(v => new SelectListItem { Value = v.Id.ToString(), Text = v.Value })" multiple class="form-control">
                         </select>
                     </div>
-                }
+                } *@
 
                 <div class="container">
                     <label asp-for="ProductImages"> <i class="fa fa-upload"></i> &nbsp; Choose A Photo </label><br />
