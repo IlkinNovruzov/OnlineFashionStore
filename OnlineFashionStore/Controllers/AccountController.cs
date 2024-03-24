@@ -1,19 +1,41 @@
-﻿using OnlineFashionStore.Extensions;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using OnlineFashionStore.Extensions;
 using OnlineFashionStore.Models.DataModels;
 using OnlineFashionStore.Models.ViewModels;
+using System.Data;
 
 namespace OnlineFashionStore.Controllers
 {
-    public class RegisterController : Controller
+    public class AccountController : Controller
     {
-        private readonly IEmailService _emailService;
         private readonly UserManager<AppUser> _userManager;
-        public RegisterController(UserManager<AppUser> userManager, IEmailService emailService)
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly IEmailService _emailService;
+
+        public AccountController(UserManager<AppUser> userManager, SignInManager<AppUser> signInManager, IEmailService emailService)
         {
-            _emailService = emailService;
             _userManager = userManager;
+            _signInManager = signInManager;
+            _emailService = emailService;
+        }
+        public IActionResult Login()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Login(AppUserLogin appUserLogin)
+        {
+            var result = await _signInManager.PasswordSignInAsync(appUserLogin.Username, appUserLogin.Password, false, true);
+            if (result.Succeeded)
+            {
+                var user = await _userManager.FindByNameAsync(appUserLogin.Username);
+                    return RedirectToAction("Index", "Home");
+                if (user.EmailConfirmed == true)
+                {
+                }
+            }
+            return View();
         }
         [HttpGet]
         public IActionResult SignUp()
@@ -39,10 +61,11 @@ namespace OnlineFashionStore.Controllers
                 var result = await _userManager.CreateAsync(appUser, appUserRegister.Password);
                 if (result.Succeeded)
                 {
+                    await _userManager.AddToRoleAsync(appUser, "User");
                     await _emailService.SendEmailAsync(appUser.Email, "Confirm Email", $"{code}");
 
                     TempData["mail"] = appUserRegister.Email;
-                    return RedirectToAction("SignIn", "Login");
+                    return RedirectToAction("Login", "Account");
                     return RedirectToAction("ConfirmMail", "ConfirmMail");
                 }
                 else

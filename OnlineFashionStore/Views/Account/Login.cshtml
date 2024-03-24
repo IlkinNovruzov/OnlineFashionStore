@@ -4,17 +4,17 @@
 <section class="login-register container">
     <ul class="nav nav-tabs mb-5" id="login_register">
         <li class="nav-item" role="presentation">
-            <a class="nav-link" asp-controller="Login" asp-action="SignIn">Login</a>
+            <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" asp-controller="Register" asp-action="SignUp">Register</a>
+            <a class="nav-link" asp-controller="Account" asp-action="SignUp">Register</a>
         </li>
     </ul>
     <div class="tab-content pt-2" id="login_register_tab_content">
 
         <div class="tab-pane fade show active">
             <div class="login-form">
-                <form asp-action="SignIn" method="post" class="needs-validation" novalidate>
+                <form asp-action="Login" method="post" class="needs-validation" novalidate>
                     <div class="form-floating mb-3">
                         <input asp-for="Username" type="text" class="form-control form-control_gray" placeholder="Username *" required>
                         <label asp-for="Username">Username *</label>
@@ -39,7 +39,7 @@
 
                     <div class="customer-option mt-4 text-center">
                         <span class="text-secondary">No account yet?</span>
-                        <a asp-controller="Register" asp-action="SignUp" class="btn-text js-show-register">Create Account</a>
+                        <a asp-controller="Account" asp-action="SignUp" class="btn-text js-show-register">Create Account</a>
                     </div>
                 </form>
             </div>

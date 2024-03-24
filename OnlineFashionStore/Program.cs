@@ -35,17 +35,7 @@ namespace OnlineFashionStore
             app.UseRouting();
 
             app.UseAuthorization();
-            app.Use(async (context, next) =>
-            {
-                if (!context.User.Identity.IsAuthenticated)
-                {
-                    // Kullan?c? oturum açmam??sa, iste?i i?lemeyi durdurabilir veya ba?ka bir sayfaya yönlendirebilirsiniz.
-                    context.Response.Redirect("/Account/Login");
-                    return;
-                }
-
-                await next();
-            });
+           
 
             app.MapControllerRoute(
                 name: "Admin",
@@ -54,8 +44,23 @@ namespace OnlineFashionStore
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
+            //app.UseEndpoints(endpoints =>
+            //{
+            //    endpoints.MapControllerRoute(
+            //        name: "default",
+            //        pattern: "{controller=Login}/{action=SignIn}/{id?}");
+            //});
             app.Run();
+            app.Use(async (context, next) =>
+            {
+                if (!context.User.Identity.IsAuthenticated)
+                {
+                    context.Response.Redirect("/Account/Login");
+                    return;
+                }
+
+                await next();
+            });
         }
     }
 }
