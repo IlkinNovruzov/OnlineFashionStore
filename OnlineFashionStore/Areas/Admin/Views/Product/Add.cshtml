@@ -37,9 +37,21 @@
                         }
                     </select>
                 </div>
-                 <div class="form-group">
+                @*  <div class="form-group">
+                <label asp-for="ColorIds" class="form-control-label">Select Colors</label>
+                <select asp-for="ColorIds" id="select" class="form-control" multiple>
+                <option value="0">Please select</option>
+                @foreach (var item in ViewBag.Colors)
+                {
+                <option value="@item.Id">@item.Name</option>
+                }
+                </select>
+                </div> *@
+                <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/css/multi-select-tag.css">
+
+                <div class="form-group">
                     <label asp-for="ColorIds" class="form-control-label">Select Colors</label>
-                    <select asp-for="ColorIds" id="select" class="form-control" multiple>
+                    <select asp-for="ColorIds" id="countries" class="form-control" multiple>
                         <option value="0">Please select</option>
                         @foreach (var item in ViewBag.Colors)
                         {
@@ -55,41 +67,6 @@
                 <div class="form-check form-switch fs-4">
                     <input class="form-check-input" type="checkbox" asp-for="Product.IsActive" checked>
                 </div><br />
-         
-               @*  @foreach (var item in ViewBag.Attributes as List<ProductAttribute>)
-                {
-                    <div class="form-group">
-                        <label>@item.Name</label>
-                        <select asp-for="AttributeValueIds" asp-items="@item.Values.Select(v => new SelectListItem { Value = v.Id.ToString(), Text = v.Value })" multiple class="form-control">
-                        </select>
-                    </div>
-                } *@
-
-                <div class="container">
-                    <label asp-for="ProductImages"> <i class="fa fa-upload"></i> &nbsp; Choose A Photo </label><br />
-                    <input type="file" id="file-input" asp-for="ProductImages" onchange="preview()" multiple>
-
-                    <p id="num-of-files">No Files Chosen</p>
-                    <div id="images" class="d-flex"></div>
-                </div>
-                <div id="images" class="d-flex">
-                    @foreach (var imageFile in Model.ProductImages)
-                    {
-                        using (var stream = imageFile.OpenReadStream())
-                        {
-                            var memoryStream = new MemoryStream();
-                            await stream.CopyToAsync(memoryStream);
-                            var bytes = memoryStream.ToArray();
-                            var base64String = Convert.ToBase64String(bytes);
-
-                            <figure>
-                                <img src="data:image;base64,@base64String" alt="Product Image">
-                                <figcaption>@imageFile.FileName</figcaption>
-                            </figure>
-                        }
-                    }
-                </div>
-
                 <button type="submit" class="btn btn-lg btn-info btn-block">
                     <span id="payment-button-amount">Add</span>
                     <span id="payment-button-sending" style="display:none;">Sending…</span>
@@ -99,102 +76,13 @@
     </form>
 
 
-    <style>
-        .form-img {
-            display: flex;
-            font-size: 1rem;
-            margin: 0 auto;
-            justify-content: space-between;
-            align-items: center;
-            flex-direction: column;
-            color: rgb(20, 20, 28);
-        }
 
-        .input-preview__src {
-            display: none;
-        }
-
-        .input-preview {
-            border: dashed black 0.175em;
-            border-radius: 0.5em;
-            width: 400px;
-            height: 200px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center;
-            position: relative;
-            transition: ease-in-out 750ms;
-        }
-
-            .input-preview::after {
-                position: absolute;
-                top: 50%;
-                left: 0;
-                width: 100%;
-                text-align: center;
-                transform: translateY(50%);
-                content: "Choose a file...";
-                font-style: italic;
-                font-size: 1em;
-            }
-
-        .has-image::before {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(50, 50, 50, 0.5);
-            content: " ";
-            transition: ease-in-out 750ms;
-        }
-
-        .has-image::after {
-            content: "Choose another file...";
-            color: white;
-        }
-
-        figure {
-            margin: 0 8px;
-        }
-
-    </style>
 </div>
 @section scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.4.0/css/bootstrap-colorpicker.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-colorpicker/3.4.0/js/bootstrap-colorpicker.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/css/multi-select-tag.css">
+    <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/js/multi-select-tag.js"></script>
     <script>
-        $(document).ready(function () {
-            $('#colorPicker').colorpicker();
-        });
+        new MultiSelectTag('countries')  // id
     </script>
-    <script>
-        let fileInput = document.getElementById("file-input");
-        let imageContainer = document.getElementById("images");
-        let numOfFiles = document.getElementById("num-of-files");
 
-        function preview() {
-            imageContainer.innerHTML = "";
-            numOfFiles.textContent = `${fileInput.files.length} Files Selected`;
-
-            for (i of fileInput.files) {
-                let reader = new FileReader();
-                let figure = document.createElement("figure");
-                let figCap = document.createElement("figcaption");
-                figCap.innerText = i.name;
-                figure.appendChild(figCap);
-                reader.onload = () => {
-                    let img = document.createElement("img");
-                    img.setAttribute("src", reader.result);
-                    figure.insertBefore(img, figCap);
-                }
-                imageContainer.appendChild(figure);
-                reader.readAsDataURL(i);
-            }
-        }
-    </script>
 }
