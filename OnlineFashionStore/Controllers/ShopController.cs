@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using OnlineFashionStore.Models.ViewModels;
 
 namespace OnlineFashionStore.Controllers
 {
@@ -13,10 +14,22 @@ namespace OnlineFashionStore.Controllers
         {
             _context = context;
         }
-        public IActionResult GetProducts()
+        public async Task<IActionResult> GetProducts()
         {
-            ViewBag.Categories = _context.Categories.ToList();
-            return View(_context.Products.Include(x => x.Category).ToList());
+            var model = new ShopViewModel()
+            {
+                Products = await _context.Products.Include(p => p.Images).Include(x => x.Category).Where(x => x.IsActive == true).ToListAsync(),
+                Categories = _context.Categories.ToList(),
+                Brands = _context.Brands.ToList(),
+                Colors = _context.Colors.ToList(),
+                BrandProductCounts = _context.Products.GroupBy(p => p.Brand.Name).Select(g => new BrandProductCount{BrandName = g.Key,ProductCount = g.Count()}).ToList()
+            };
+            return View(model);
+        }
+        public async Task<IActionResult> ProductDetails(int id)
+        {
+            var product =await _context.Products.Include(p=>p.Images).Include(p => p.ProductColors).ThenInclude(pc => pc.Color).FirstOrDefaultAsync(p => p.Id == id);
+            return View(product);
         }
     }
 }
