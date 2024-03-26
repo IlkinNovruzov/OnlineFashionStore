@@ -256,16 +256,16 @@ namespace OnlineFashionStore.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a08b4754-e869-4432-8b5a-01c6e45ec456",
+                            ConcurrencyStamp = "798a5a47-9786-4aef-a139-b54a65f99e37",
                             Email = "inovruzov2004@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             Name = "Ilkin",
                             NormalizedEmail = "INOVRUZOV2004@GMAIL.COM",
                             NormalizedUserName = "ILKIN.ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIaUyQYsXKBggfAXC/gteYIW5VyJCLqOBtPsV+Nk0+cOrkMwXHT9ZHCBAA8phtRx7Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPI2ip9IWf2r2Tgas3+8kKiFntP6/PPnV5t2kZlg39uucm9a8m0m7SeoQP5jFiJA9g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d1f37dc8-e42f-4fe2-959e-f8d1757e3422",
+                            SecurityStamp = "7e0b1868-b75a-45d6-9539-84d556d0eff2",
                             Surname = "Novruzov",
                             TwoFactorEnabled = false,
                             UserName = "ilkin.admin"
@@ -365,6 +365,94 @@ namespace OnlineFashionStore.Migrations
                     b.ToTable("Images");
                 });
 
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Order", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("AppUserId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("OrderNumber")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PaymentMethodId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("PaymentId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.OrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Subtotal")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("OrderItems");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -451,6 +539,74 @@ namespace OnlineFashionStore.Migrations
                     b.HasIndex("ColorId");
 
                     b.ToTable("ProductColors");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.ProductSize", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SizeId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ProductId", "SizeId");
+
+                    b.HasIndex("SizeId");
+
+                    b.ToTable("ProductSizes");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Review", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Rating")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Reviews");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Size", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Sizes");
                 });
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Slider", b =>
@@ -571,6 +727,44 @@ namespace OnlineFashionStore.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Order", b =>
+                {
+                    b.HasOne("OnlineFashionStore.Models.DataModels.AppUser", "AppUser")
+                        .WithMany("Orders")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineFashionStore.Models.DataModels.Payment", "Payment")
+                        .WithMany("Orders")
+                        .HasForeignKey("PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Payment");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.OrderItem", b =>
+                {
+                    b.HasOne("OnlineFashionStore.Models.DataModels.Order", "Order")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineFashionStore.Models.DataModels.Product", "Product")
+                        .WithMany("OrderItems")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Product", b =>
                 {
                     b.HasOne("OnlineFashionStore.Models.DataModels.Brand", "Brand")
@@ -620,6 +814,51 @@ namespace OnlineFashionStore.Migrations
                     b.Navigation("Product");
                 });
 
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.ProductSize", b =>
+                {
+                    b.HasOne("OnlineFashionStore.Models.DataModels.Product", "Product")
+                        .WithMany("ProductSizes")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineFashionStore.Models.DataModels.Size", "Size")
+                        .WithMany("ProductSizes")
+                        .HasForeignKey("SizeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("Size");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Review", b =>
+                {
+                    b.HasOne("OnlineFashionStore.Models.DataModels.Product", "Product")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("OnlineFashionStore.Models.DataModels.AppUser", "User")
+                        .WithMany("Review")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.AppUser", b =>
+                {
+                    b.Navigation("Orders");
+
+                    b.Navigation("Review");
+                });
+
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Brand", b =>
                 {
                     b.Navigation("Products");
@@ -635,13 +874,34 @@ namespace OnlineFashionStore.Migrations
                     b.Navigation("ProductColors");
                 });
 
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Order", b =>
+                {
+                    b.Navigation("OrderItems");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Payment", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Product", b =>
                 {
                     b.Navigation("Attributes");
 
                     b.Navigation("Images");
 
+                    b.Navigation("OrderItems");
+
                     b.Navigation("ProductColors");
+
+                    b.Navigation("ProductSizes");
+
+                    b.Navigation("Reviews");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Size", b =>
+                {
+                    b.Navigation("ProductSizes");
                 });
 #pragma warning restore 612, 618
         }

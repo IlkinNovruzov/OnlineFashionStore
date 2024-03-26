@@ -88,7 +88,7 @@
                                 @foreach (var item in Model.ProductColors)
                                 {
                                 <input type="radio" name="color" id="swatch-11">
-                                <label class="swatch swatch-color js-swatch" for="swatch-11" aria-label="Black" data-bs-toggle="tooltip" data-bs-placement="top" title="Black" style="color:@item.Color.Code"></label>
+                                    <label class="swatch swatch-color js-swatch" for="swatch-11" aria-label="@item.Color.Name" data-bs-toggle="tooltip" data-bs-placement="top" title="@item.Color.Name" style="color:@item.Color.Code"></label>
                                 }
 @* 
                                 <input type="radio" name="color" id="swatch-12" checked>

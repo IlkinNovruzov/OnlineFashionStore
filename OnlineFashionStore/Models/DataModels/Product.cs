@@ -36,10 +36,11 @@ namespace OnlineFashionStore.Models.DataModels
         public bool IsActive { get; set; }
 
         public List<ProductColor> ProductColors { get; set; }
+        public List<ProductSize> ProductSizes { get; set; }
         public List<Image> Images { get; set; }
         public List<ProductAttribute> Attributes { get; set; }
-        [NotMapped]
-        public List<Size> Sizes { get; set; }
+        public List<OrderItem> OrderItems { get; set; }
+        public List<Review> Reviews { get; set; }
 
     }
 }

@@ -95,11 +95,26 @@ namespace OnlineFashionStore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Colors", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -108,7 +123,8 @@ namespace OnlineFashionStore.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -269,25 +285,33 @@ namespace OnlineFashionStore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ColorProduct",
+                name: "Orders",
                 columns: table => new
                 {
-                    ColorsId = table.Column<int>(type: "int", nullable: false),
-                    ProductsId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrderNumber = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Total = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentMethodId = table.Column<int>(type: "int", nullable: false),
+                    PaymentId = table.Column<int>(type: "int", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    AppUserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ColorProduct", x => new { x.ColorsId, x.ProductsId });
+                    table.PrimaryKey("PK_Orders", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ColorProduct_Colors_ColorsId",
-                        column: x => x.ColorsId,
-                        principalTable: "Colors",
+                        name: "FK_Orders_AspNetUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ColorProduct_Products_ProductsId",
-                        column: x => x.ProductsId,
-                        principalTable: "Products",
+                        name: "FK_Orders_Payments_PaymentId",
+                        column: x => x.PaymentId,
+                        principalTable: "Payments",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -336,25 +360,106 @@ namespace OnlineFashionStore.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductSize",
+                name: "ProductColors",
                 columns: table => new
                 {
-                    ProductsId = table.Column<int>(type: "int", nullable: false),
-                    SizesId = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    ColorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductSize", x => new { x.ProductsId, x.SizesId });
+                    table.PrimaryKey("PK_ProductColors", x => new { x.ProductId, x.ColorId });
                     table.ForeignKey(
-                        name: "FK_ProductSize_Products_ProductsId",
-                        column: x => x.ProductsId,
+                        name: "FK_ProductColors_Colors_ColorId",
+                        column: x => x.ColorId,
+                        principalTable: "Colors",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ProductColors_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductSizes",
+                columns: table => new
+                {
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    SizeId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductSizes", x => new { x.ProductId, x.SizeId });
+                    table.ForeignKey(
+                        name: "FK_ProductSizes_Products_ProductId",
+                        column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ProductSize_Sizes_SizesId",
-                        column: x => x.SizesId,
+                        name: "FK_ProductSizes_Sizes_SizeId",
+                        column: x => x.SizeId,
                         principalTable: "Sizes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Reviews",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Rating = table.Column<int>(type: "int", nullable: false),
+                    Date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Reviews", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Reviews_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Reviews_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrderItems",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Subtotal = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    OrderId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrderItems", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrderItems_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -371,7 +476,7 @@ namespace OnlineFashionStore.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "Name", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "Surname", "TwoFactorEnabled", "UserName" },
-                values: new object[] { 1, 0, "e6e68d02-582a-43cc-996f-a6260b37d657", "inovruzov2004@gmail.com", true, true, null, "Ilkin", "INOVRUZOV2004@GMAIL.COM", "ILKIN.ADMIN", "AQAAAAIAAYagAAAAEJyTc7wMOQNfj41nPC3LTOkfCi7yKLSj/RUohpmf3BTkjJl7UxfGqmKkjy1vKIF0bQ==", null, false, "f2012299-39b9-40a8-965c-9a074b86d54d", "Novruzov", false, "ilkin.admin" });
+                values: new object[] { 1, 0, "798a5a47-9786-4aef-a139-b54a65f99e37", "inovruzov2004@gmail.com", true, true, null, "Ilkin", "INOVRUZOV2004@GMAIL.COM", "ILKIN.ADMIN", "AQAAAAIAAYagAAAAEPI2ip9IWf2r2Tgas3+8kKiFntP6/PPnV5t2kZlg39uucm9a8m0m7SeoQP5jFiJA9g==", null, false, "7e0b1868-b75a-45d6-9539-84d556d0eff2", "Novruzov", false, "ilkin.admin" });
 
             migrationBuilder.InsertData(
                 table: "Sliders",
@@ -432,19 +537,39 @@ namespace OnlineFashionStore.Migrations
                 column: "ParentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ColorProduct_ProductsId",
-                table: "ColorProduct",
-                column: "ProductsId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Images_ProductId",
                 table: "Images",
                 column: "ProductId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_OrderId",
+                table: "OrderItems",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderItems_ProductId",
+                table: "OrderItems",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_AppUserId",
+                table: "Orders",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_PaymentId",
+                table: "Orders",
+                column: "PaymentId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductAttributes_ProductId",
                 table: "ProductAttributes",
                 column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductColors_ColorId",
+                table: "ProductColors",
+                column: "ColorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_BrandId",
@@ -457,9 +582,19 @@ namespace OnlineFashionStore.Migrations
                 column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductSize_SizesId",
-                table: "ProductSize",
-                column: "SizesId");
+                name: "IX_ProductSizes_SizeId",
+                table: "ProductSizes",
+                column: "SizeId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_ProductId",
+                table: "Reviews",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Reviews_UserId",
+                table: "Reviews",
+                column: "UserId");
         }
 
         /// <inheritdoc />
@@ -481,16 +616,22 @@ namespace OnlineFashionStore.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "ColorProduct");
+                name: "Images");
 
             migrationBuilder.DropTable(
-                name: "Images");
+                name: "OrderItems");
 
             migrationBuilder.DropTable(
                 name: "ProductAttributes");
 
             migrationBuilder.DropTable(
-                name: "ProductSize");
+                name: "ProductColors");
+
+            migrationBuilder.DropTable(
+                name: "ProductSizes");
+
+            migrationBuilder.DropTable(
+                name: "Reviews");
 
             migrationBuilder.DropTable(
                 name: "Sliders");
@@ -499,16 +640,22 @@ namespace OnlineFashionStore.Migrations
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetUsers");
+                name: "Orders");
 
             migrationBuilder.DropTable(
                 name: "Colors");
 
             migrationBuilder.DropTable(
+                name: "Sizes");
+
+            migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Sizes");
+                name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "Brands");

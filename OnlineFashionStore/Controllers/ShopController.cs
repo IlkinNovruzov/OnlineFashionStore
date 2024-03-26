@@ -1,12 +1,10 @@
 ﻿using OnlineFashionStore.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Authorization;
 using OnlineFashionStore.Models.ViewModels;
 
 namespace OnlineFashionStore.Controllers
 {
-    [Authorize]
     public class ShopController : Controller
     {
         private readonly AppDbContext _context;
@@ -30,6 +28,10 @@ namespace OnlineFashionStore.Controllers
         {
             var product =await _context.Products.Include(p=>p.Images).Include(p => p.ProductColors).ThenInclude(pc => pc.Color).FirstOrDefaultAsync(p => p.Id == id);
             return View(product);
+        }
+        public IActionResult ShopCart()
+        {
+            return View();
         }
     }
 }

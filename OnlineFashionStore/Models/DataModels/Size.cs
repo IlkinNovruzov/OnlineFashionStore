@@ -3,12 +3,13 @@ using System.ComponentModel.DataAnnotations;
 
 namespace OnlineFashionStore.Models.DataModels
 {
-    public enum Size
+    public class Size
     {
-        S,
-        M,
-        L,
-        X,
-        XX
+        [Key]
+        public int Id { get; set; }
+        [Required]
+        public string Name { get; set; }
+        public bool IsActive { get; set; }
+        public List<ProductSize> ProductSizes { get; set; }
     }
 }

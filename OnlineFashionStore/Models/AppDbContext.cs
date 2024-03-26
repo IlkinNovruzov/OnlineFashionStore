@@ -19,11 +19,18 @@ namespace OnlineFashionStore.Models
         public DbSet<Slider> Sliders { get; set; }
         public DbSet<Color> Colors { get; set; }
         public DbSet<ProductColor> ProductColors { get; set; }
+        public DbSet<Size> Sizes { get; set; }
+        public DbSet<ProductSize> ProductSizes { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<ProductColor>().HasKey(pc=>new {pc.ProductId,pc.ColorId});
+            modelBuilder.Entity<ProductSize>().HasKey(ps=>new {ps.ProductId,ps.SizeId});
             modelBuilder.Entity<Slider>().HasData(
                 new Slider
                 {
