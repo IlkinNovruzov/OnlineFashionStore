@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OnlineFashionStore.Models;
 using OnlineFashionStore.Models.DataModels;
+using Stripe;
 
 namespace OnlineFashionStore
 {
@@ -33,6 +34,8 @@ namespace OnlineFashionStore
             app.UseStaticFiles(); 
 
             app.UseRouting();
+
+            StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
             app.UseAuthorization();
            

@@ -20,18 +20,30 @@ namespace OnlineFashionStore.Controllers
                 Categories = _context.Categories.ToList(),
                 Brands = _context.Brands.ToList(),
                 Colors = _context.Colors.ToList(),
-                BrandProductCounts = _context.Products.GroupBy(p => p.Brand.Name).Select(g => new BrandProductCount{BrandName = g.Key,ProductCount = g.Count()}).ToList()
+                BrandProductCounts = _context.Products.GroupBy(p => p.Brand.Name).Select(g => new BrandProductCount { BrandName = g.Key, ProductCount = g.Count() }).ToList()
             };
             return View(model);
         }
         public async Task<IActionResult> ProductDetails(int id)
         {
-            var product =await _context.Products.Include(p=>p.Images).Include(p => p.ProductColors).ThenInclude(pc => pc.Color).FirstOrDefaultAsync(p => p.Id == id);
-            return View(product);
+            var model = new ProductDetailsVM()
+            {
+                Product = await _context.Products.Include(p => p.Images).Include(a => a.Attributes).Include(p => p.ProductColors).ThenInclude(pc => pc.Color).FirstOrDefaultAsync(p => p.Id == id),
+                Reviews = _context.Reviews.Where(r => r.ProductId == 1).Include(r => r.User).ToList()
+            };
+            return View(model);
         }
+
         public IActionResult ShopCart()
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult Review(ReviewViewModel model)
+        {
+
+            return View();
+        }
     }
+
 }
