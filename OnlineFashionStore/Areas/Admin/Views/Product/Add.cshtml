@@ -1,5 +1,4 @@
-﻿@using OnlineFashionStore.Models.ViewModels
-@model ProductViewModel
+﻿@model ProductViewModel
 <div class="d-flex justify-content-around">
     <form asp-controller="Product" asp-action="Add" method="post" enctype="multipart/form-data" class="col-lg-8 needs-validation" novalidate>
         <div class="card">
@@ -37,23 +36,21 @@
                         }
                     </select>
                 </div>
-                @*  <div class="form-group">
-                <label asp-for="ColorIds" class="form-control-label">Select Colors</label>
-                <select asp-for="ColorIds" id="select" class="form-control" multiple>
-                <option value="0">Please select</option>
-                @foreach (var item in ViewBag.Colors)
-                {
-                <option value="@item.Id">@item.Name</option>
-                }
-                </select>
-                </div> *@
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/css/multi-select-tag.css">
 
                 <div class="form-group">
                     <label asp-for="ColorIds" class="form-control-label">Select Colors</label>
-                    <select asp-for="ColorIds" id="countries" class="form-control" multiple>
-                        <option value="0">Please select</option>
+                    <select asp-for="ColorIds" id="countries" class="form-control" multiple required>
                         @foreach (var item in ViewBag.Colors)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SizeIds" class="form-control-label">Select Sizes</label>
+                    <select asp-for="SizeIds" id="sizes" class="form-control" multiple required>
+                        @foreach (var item in ViewBag.Sizes)
                         {
                             <option value="@item.Id">@item.Name</option>
                         }
@@ -83,6 +80,7 @@
     <script src="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/js/multi-select-tag.js"></script>
     <script>
         new MultiSelectTag('countries')  // id
+        new MultiSelectTag('sizes')  // id
     </script>
     <script>
         // Example starter JavaScript for disabling form submissions if there are invalid fields

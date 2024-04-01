@@ -1,0 +1,60 @@
+﻿@model List<Payment>
+
+<!-- Listeleme -->
+@foreach (var product in Model)
+{
+    <div>
+        <h3>@product.Name</h3>
+        <button type="button" class="btn btn-primary" onclick="openEditModal(@product.Id)">Edit</button>
+        <button type="button" class="btn btn-danger" onclick="deleteProduct(@product.Id)">Delete</button>
+    </div>
+}
+
+<!-- Ekleme Formu -->
+<div id="addForm">
+    <h3>Add Product</h3>
+    <input type="text" id="newName" placeholder="Name" /><br />
+    <button type="button" class="btn btn-success" onclick="addProduct()">Add Product</button>
+</div>
+
+<!-- Güncelleme Formu -->
+<div id="editForm" style="display: none;">
+    <h3>Edit Product</h3>
+    <input type="text" id="editName" /><br />
+    <button type="button" class="btn btn-primary" onclick="saveChanges()">Save Changes</button>
+</div>
+
+<script>
+    function openEditModal(id) {
+        // AJAX ile veri al ve formu doldur
+        $.get('Admin/Payment/GetProduct/' + id, function (data) {
+            $('#editName').val(data.name);
+            $('#editForm').show();
+        });
+    }
+
+    function addProduct() {
+        var name = $('#newName').val();
+        $.post('Admin/Payment/AddProduct', { name: name }, function() {
+            location.reload();
+        });
+    }
+
+    function saveChanges() {
+        var id = // seçilen ürünün ID'si
+        var name = $('#editName').val();
+        // AJAX ile ürün güncelleme işlemi yap
+        $.post('Admin/Payment/UpdateProduct', { id: id, name: name }, function () {
+            location.reload();
+        });
+    }
+
+    function deleteProduct(id) {
+        // AJAX ile ürün silme işlemi yap
+        $.post('Admin/Payment/DeleteProduct/' + id, function () {
+            location.reload();
+        });
+    }
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+

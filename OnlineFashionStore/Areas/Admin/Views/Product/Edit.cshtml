@@ -1,25 +1,25 @@
-﻿@using OnlineFashionStore.Models.ViewModels
-@model ProductViewModel
+﻿@model ProductViewModel
 <div class="d-flex justify-content-around">
-    <form asp-controller="Product" asp-action="Edit" method="post" enctype="multipart/form-data" class="col-lg-8">
+    <form asp-controller="Product" asp-action="Add" method="post" enctype="multipart/form-data" class="col-lg-8 needs-validation" novalidate>
         <div class="card">
             <div class="card-header"><strong>Product</strong><small> Form</small></div>
             <div class="card-body card-block">
                 <div class="form-group">
                     <label asp-for="Product.Name" class=" form-control-label">Name</label>
-                    <input asp-for="Product.Name" type="text" placeholder="Name" class="form-control">
+                    <input asp-for="Product.Name" type="text" placeholder="Name" class="form-control" required>
                 </div>
+                <input asp-for="Product.Id" type="hidden" class="form-control" required>
                 <div class="form-group">
                     <label asp-for="Product.Price" class="form-control-label">Price</label>
-                    <input type="text" asp-for="Product.Price" placeholder="Price" class="form-control">
+                    <input type="text" asp-for="Product.Price" placeholder="Price" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label asp-for="Product.StockQuantity" class="form-control-label">Stock Quantity</label>
-                    <input type="text" asp-for="Product.StockQuantity" placeholder="Quantity" class="form-control">
+                    <input type="text" asp-for="Product.StockQuantity" placeholder="Quantity" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <label asp-for="Product.CategoryId" class="form-control-label">Select Category</label>
-                    <select asp-for="Product.CategoryId" id="select" class="form-control">
+                    <select asp-for="Product.CategoryId" id="select" class="form-control" required>
                         <option value="0">Please select</option>
                         @foreach (var item in ViewBag.Categories)
                         {
@@ -29,7 +29,7 @@
                 </div>
                 <div class="form-group">
                     <label asp-for="Product.BrandId" class="form-control-label">Select Brand</label>
-                    <select asp-for="Product.BrandId" id="select" class="form-control">
+                    <select asp-for="Product.BrandId" id="select" class="form-control" required>
                         <option value="0">Please select</option>
                         @foreach (var item in ViewBag.Brands)
                         {
@@ -37,21 +37,11 @@
                         }
                     </select>
                 </div>
-                @*  <div class="form-group">
-                <label asp-for="ColorIds" class="form-control-label">Select Colors</label>
-                <select asp-for="ColorIds" id="select" class="form-control" multiple>
-                <option value="0">Please select</option>
-                @foreach (var item in ViewBag.Colors)
-                {
-                <option value="@item.Id">@item.Name</option>
-                }
-                </select>
-                </div> *@
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/habibmhamadi/multi-select-tag@2.0.1/dist/css/multi-select-tag.css">
 
                 <div class="form-group">
                     <label asp-for="ColorIds" class="form-control-label">Select Colors</label>
-                    <select asp-for="ColorIds" id="countries" class="form-control" multiple>
+                    <select asp-for="ColorIds" id="countries" class="form-control" multiple required>
                         <option value="0">Please select</option>
                         @foreach (var item in ViewBag.Colors)
                         {
@@ -60,15 +50,25 @@
                     </select>
                 </div>
                 <div class="form-group">
+                    <label asp-for="SizeIds" class="form-control-label">Select Sizes</label>
+                    <select asp-for="SizeIds" id="countries" class="form-control" multiple required>
+                        <option value="0">Please select</option>
+                        @foreach (var item in ViewBag.Sizes)
+                        {
+                            <option value="@item.Id">@item.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="form-group">
                     <label asp-for="Product.Description" class=" form-control-label">Description</label>
-                    <input asp-for="Product.Description" type="text" placeholder="Description" class="form-control">
+                    <input asp-for="Product.Description" type="text" placeholder="Description" class="form-control" required>
                 </div>
                 <label class="form-check-label" asp-for="Product.IsActive">Activation</label>
                 <div class="form-check form-switch fs-4">
                     <input class="form-check-input" type="checkbox" asp-for="Product.IsActive" checked>
                 </div><br />
                 <button type="submit" class="btn btn-lg btn-info btn-block">
-                    <span id="payment-button-amount">Save</span>
+                    <span id="payment-button-amount">Add</span>
                     <span id="payment-button-sending" style="display:none;">Sending…</span>
                 </button>
             </div>
@@ -84,5 +84,25 @@
     <script>
         new MultiSelectTag('countries')  // id
     </script>
-
+    <script>
+        // Example starter JavaScript for disabling form submissions if there are invalid fields
+        (function () {
+            'use strict';
+            window.addEventListener('load', function () {
+                // Fetch all the forms we want to apply custom Bootstrap validation styles to
+                var forms = document.getElementsByClassName('needs-validation');
+                // Loop over them and prevent submission
+                var validation = Array.prototype.filter.call(forms, function (form) {
+                    form.addEventListener('submit', function (event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+    </script>
+}
 }

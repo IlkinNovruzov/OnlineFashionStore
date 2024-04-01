@@ -61,7 +61,7 @@
                 <form asp-controller="Product" asp-action="AddImage" method="post" enctype="multipart/form-data" class="col-lg-8">
 
                     <div class="container">
-                        <input type="hidden" asp-for="@Model.Id" />
+                        <input asp-for="Id" type="hidden" class="form-control" required>
                         <label asp-for="ImgFile"> <i class="fa fa-upload"></i> &nbsp; Choose A Photo </label><br />
                         <input type="file" id="file-input" asp-for="ImgFile" onchange="preview()">
 

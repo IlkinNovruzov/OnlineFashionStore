@@ -1,4 +1,6 @@
-﻿﻿
+﻿@using Microsoft.AspNetCore.Identity
+@using OnlineFashionStore.Models.DataModels
+@inject SignInManager<AppUser> SignInManager﻿
 <!doctype html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang=""> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8" lang=""> <![endif]-->
@@ -111,12 +113,12 @@
                             <li><i class="fa fa-table"></i><a href="tables-data.html">Data Table</a></li>
                             <li><i class="fa fa-table"></i><a asp-area="Admin" asp-controller="Category" asp-action="GetCategory">Categories</a></li>
                             <li><i class="fa fa-table"></i><a asp-area="Admin" asp-controller="Product" asp-action="GetProduct">Products</a></li>
-                            <li><i class="fa fa-table"></i><a asp-area="Admin" asp-controller="Brand" asp-action="GetBrand">Brands</a></li>
+                            <li><i class="fa fa-table"></i><a asp-area="Admin" asp-controller="Brand" asp-action="Index">Brands</a></li>
                             <li><i class="fa fa-table"></i><a asp-area="Admin" asp-controller="Attribute" asp-action="GetAttribute">Attribute</a></li>
                             <li><i class="fa fa-table"></i><a asp-area="Admin" asp-controller="User" asp-action="GetUser">Users</a></li>
                             <li><i class="fa fa-table"></i><a asp-area="Admin" asp-controller="Role" asp-action="GetRole">Roles</a></li>
                             <li><i class="fa fa-table"></i><a asp-area="Admin" asp-controller="Color" asp-action="GetColor">Colors</a></li>
-                            <li><i class="fa fa-table"></i><a asp-area="Admin" asp-controller="Size" asp-action="GetCategoryAttribute">CategoryAttribute</a></li>
+                            <li><i class="fa fa-table"></i><a asp-area="Admin" asp-controller="Size" asp-action="Index">CategoryAttribute</a></li>
 
                         </ul>
                     </li>
@@ -258,19 +260,20 @@
                     </div>
 
                     <div class="user-area dropdown float-right">
-                        <a href="#" class="dropdown-toggle active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <img class="user-avatar rounded-circle" src="~/elaadmin-master/images/admin.jpg" alt="User Avatar">
-                        </a>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <h3 class="dropdown-toggle active" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Welcome @User.Identity.Name!</h3>
+                            <div class="user-menu dropdown-menu">
+                                <a class="nav-link" href="#"><i class="fa fa- user"></i>My Profile</a>
 
-                        <div class="user-menu dropdown-menu">
-                            <a class="nav-link" href="#"><i class="fa fa- user"></i>My Profile</a>
+                                <a class="nav-link" href="#"><i class="fa fa- user"></i>Notifications <span class="count">13</span></a>
 
-                            <a class="nav-link" href="#"><i class="fa fa- user"></i>Notifications <span class="count">13</span></a>
+                                <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
 
-                            <a class="nav-link" href="#"><i class="fa fa -cog"></i>Settings</a>
+                                <a class="nav-link" asp-controller="Home" asp-action="Logout"><i class="fa fa-power -off"></i>Logout</a>
+                            </div>
+                        }
 
-                            <a class="nav-link" href="#"><i class="fa fa-power -off"></i>Logout</a>
-                        </div>
                     </div>
 
                 </div>

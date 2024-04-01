@@ -6,5 +6,6 @@ namespace OnlineFashionStore.Models.ViewModels
     {
         public Product Product { get; set; }
         public List<int> ColorIds { get; set; }
+        public List<int> SizeIds { get; set; }
     }
 }

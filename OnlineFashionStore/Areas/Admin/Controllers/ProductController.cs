@@ -26,7 +26,104 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
             ViewBag.Categories = _context.Categories.ToList();
             ViewBag.Brands = _context.Brands.ToList();
             ViewBag.Colors = _context.Colors.ToList();
+            ViewBag.Sizes = _context.Sizes.ToList();
             return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> Add(ProductViewModel model)
+        {
+            await _context.Products.AddAsync(model.Product);
+            await _context.SaveChangesAsync();
+            foreach (var colorId in model.ColorIds)
+            {
+                var productColor = new ProductColor
+                {
+                    ProductId = model.Product.Id,
+                    ColorId = colorId
+                };
+                _context.ProductColors.Add(productColor);
+            }
+            foreach (var sizeId in model.SizeIds)
+            {
+                var productSize = new ProductSize
+                {
+                    ProductId = model.Product.Id,
+                    SizeId=sizeId
+                };
+                _context.ProductSizes.Add(productSize);
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Image", new { id = model.Product.Id });
+        }
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            ViewBag.Categories = _context.Categories.ToList();
+            ViewBag.Brands = _context.Brands.ToList();
+            ViewBag.Colors = _context.Colors.ToList();
+            ViewBag.Sizes = _context.Sizes.ToList();
+
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
+
+            var colorIds = _context.ProductColors.Where(pc => pc.ProductId == id).Select(pc => pc.ColorId).ToList();
+            var sizeIds = _context.ProductSizes.Where(ps => ps.ProductId == id).Select(ps => ps.SizeId).ToList();
+            var model = new ProductViewModel()
+            {
+                Product = product,
+                ColorIds = colorIds,
+                SizeIds = sizeIds
+            };
+
+            return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(ProductViewModel model)
+        {
+            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == model.Product.Id);
+            product.Name=model.Product.Name; 
+            product.Description=model.Product.Description;
+            product.CategoryId=model.Product.CategoryId;
+            product.BrandId=model.Product.BrandId;
+            product.StockQuantity=model.Product.StockQuantity;
+            product.Price=model.Product.Price;
+            product.IsActive=model.Product.IsActive;
+
+            await _context.SaveChangesAsync();
+
+            var oldColors = _context.ProductColors.Where(pc => pc.ProductId == model.Product.Id).ToList();
+            var oldSizes = _context.ProductSizes.Where(ps => ps.ProductId == model.Product.Id).ToList();
+            _context.ProductColors.RemoveRange(oldColors);
+            _context.ProductSizes.RemoveRange(oldSizes);
+            foreach (var colorId in model.ColorIds)
+            {
+                var productColor = new ProductColor
+                {
+                    ProductId = model.Product.Id,
+                    ColorId = colorId
+                };
+                _context.ProductColors.Add(productColor); 
+            }
+            foreach (var sizeId in model.SizeIds)
+            {
+                var productSize = new ProductSize
+                {
+                    ProductId = model.Product.Id,
+                    SizeId = sizeId
+                };
+                _context.ProductSizes.Add(productSize);
+            }
+            await _context.SaveChangesAsync();
+            return RedirectToAction("GetProduct");
+        }
+        public IActionResult Delete(int id)
+        {
+            var p = _context.Products.Find(id);
+            if (p != null)
+            {
+                _context.Products.Remove(p);
+            }
+            _context.SaveChanges();
+            return RedirectToAction("GetProduct");
         }
         [HttpGet]
         public IActionResult Image(int id)
@@ -37,6 +134,36 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
                 Images = _context.Images.Where(x => x.ProductId == id).ToList()
             };
             return View(model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddImage(ImageViewModel model)
+        {
+            if (FileExtensions.IsImage(model.ImgFile))
+            {
+                string nameImg = await FileExtensions.SaveAsync(model.ImgFile, "products");
+                var productImage = new Image
+                {
+                    ImageUrl = nameImg,
+                    ProductId = model.Id,
+                    IsActive = true
+                };
+                _context.Images.Add(productImage);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("Image", new { id = model.Id });
+
+        }
+        public async Task<IActionResult> DeleteImage(int id)
+        {
+            var p = await _context.Images.FirstOrDefaultAsync(p => p.Id == id);
+
+            if (p != null)
+            {
+                _context.Images.Remove(p);
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Image", new { id = id });
+
         }
         [HttpGet]
         public IActionResult Attributes(int id)
@@ -65,41 +192,6 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
             return RedirectToAction("Attributes", new { id = model.ProductId });
 
         }
-        [HttpPost]
-        public async Task<IActionResult> AddImage(ImageViewModel model)
-        {
-            if (FileExtensions.IsImage(model.ImgFile))
-            {
-                string nameImg = await FileExtensions.SaveAsync(model.ImgFile, "products");
-                var productImage = new Image
-                {
-                    ImageUrl = nameImg,
-                    ProductId = model.Id,
-                    IsActive = true
-                };
-                _context.Images.Add(productImage);
-                _context.SaveChanges();
-            }
-            return RedirectToAction("Image", new { id = model.Id });
-
-        }
-        [HttpPost]
-        public async Task<IActionResult> Add(ProductViewModel model)
-        {
-            _context.Products.Add(model.Product);
-            _context.SaveChanges();
-            foreach (var colorId in model.ColorIds)
-            {
-                var productColor = new ProductColor
-                {
-                    ProductId = model.Product.Id,
-                    ColorId = colorId
-                };
-                _context.ProductColors.Add(productColor);
-            }
-            _context.SaveChanges();
-            return RedirectToAction("GetProduct");
-        }
         public async Task<IActionResult> DeleteAttribute(int id)
         {
             var a = await _context.ProductAttributes.FirstOrDefaultAsync(p => p.Id == id);
@@ -111,56 +203,6 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
             _context.SaveChanges();
             return RedirectToAction("Attributes", new { id = id });
 
-        }
-        public async Task<IActionResult> DeleteImage(int id)
-        {
-            var p = await _context.Images.FirstOrDefaultAsync(p => p.Id == id);
-
-            if (p != null)
-            {
-                _context.Images.Remove(p);
-            }
-            _context.SaveChanges();
-            return RedirectToAction("Image", new { id = id });
-
-        }
-        public IActionResult Delete(int id)
-        {
-            var p = _context.Products.Find(id);
-            if (p != null)
-            {
-                _context.Products.Remove(p);
-            }
-            _context.SaveChanges();
-            return RedirectToAction("GetProduct");
-        }
-        [HttpGet]
-        public async Task<IActionResult> EditAsync(int id)
-        {
-            ViewBag.Categories = _context.Categories.ToList();
-            ViewBag.Brands = _context.Brands.ToList();
-            ViewBag.Colors = _context.Colors.ToList();
-
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == id);
-
-            var colorIds = _context.ProductColors.Where(pc => pc.ProductId == id).Select(pc => pc.ColorId).ToList();
-            var model = new ProductViewModel()
-            {
-                Product = product,
-                ColorIds = colorIds
-            };
-           
-            return View(model);
-        }
-        [HttpPost]
-        public async Task<IActionResult> Edit(ProductViewModel model)
-        {
-            _context.Products.Update(model.Product);
-          //  var colorIds = _context.ProductColors.Where(pc => pc.ProductId == id).Select(pc => pc.ColorId).ToList();
-         
-            //_context.ProductColors.Update(model.ColorIds);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("GetProduct");
         }
         [HttpPost]
         public IActionResult Activation(int productId, bool isActive)
