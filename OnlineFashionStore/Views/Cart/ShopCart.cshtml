@@ -1,7 +1,7 @@
 ﻿@model CartViewModel
-<main>
+<main id="mainContent">
     <div class="mb-4 pb-4"></div>
-    <section class="shop-checkout container">
+    <section class="shop-checkout container" id="cartContent">
         <h2 class="page-title">Cart</h2>
         <div class="checkout-steps">
             <a asp-controller="Shop" asp-action="ShopCart" class="checkout-steps__item active">
@@ -61,10 +61,10 @@
                                     <span class="shopping-cart__product-price">$@item.Price</span>
                                 </td>
                                 <td>
-                                    <div class="qty-control position-relative">
-                                        <input type="number" name="quantity" value="3" min="1" class="qty-control__number text-center">
-                                        <div class="qty-control__reduce">-</div>
-                                        <div class="qty-control__increase">+</div>
+                                    <div class="qty-control position-relative" >
+                                        <input type="number" name="quantity" value="@item.Quantity" min="1" class="qty-control__number text-center">
+                                        <div class="qty-control__reduce" data-product-id="@item.ProductId">-</div>
+                                        <div class="qty-control__increase" data-product-id="@item.ProductId">+</div>
                                     </div><!-- .qty-control -->
                                 </td>
                                 <td>

@@ -7,5 +7,6 @@ namespace OnlineFashionStore.Models.ViewModels
         public Product Product { get; set; }
         public List<Review> Reviews { get; set; }
         public Review? Review { get; set; }
+        public CartItem CartItem { get; set; }
     }
 }

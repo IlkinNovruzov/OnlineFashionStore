@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />
+    <Folder Include="Areas\Admin\Models\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,10 +42,6 @@
     </PackageReference>
     <PackageReference Include="MimeKit" Version="4.4.0" />
     <PackageReference Include="Stripe.net" Version="43.20.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\BankAccountApi\BankAccountApi.csproj" />
   </ItemGroup>
 
 </Project>

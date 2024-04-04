@@ -45,8 +45,8 @@ namespace OnlineFashionStore.Controllers
             HttpContext.Session.SetJson("Cart", cart);
 
             TempData["Success"] = "The product has been added!";
-
-            return RedirectToAction("ShopCart");
+            return Json(new { success = true });
+            //return RedirectToAction("ShopCart");
         }
         public async Task<IActionResult> Decrease(int id)
         {
@@ -73,8 +73,9 @@ namespace OnlineFashionStore.Controllers
             }
 
             TempData["Success"] = "The product has been removed!";
+            return Json(new { success = true });
 
-            return RedirectToAction("ShopCart");
+            //return RedirectToAction("ShopCart");
         }
 
         public async Task<IActionResult> Remove(int id)

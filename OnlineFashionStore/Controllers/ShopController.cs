@@ -55,18 +55,7 @@ namespace OnlineFashionStore.Controllers
        
         
         
-        public IActionResult AddBrand(string Bname)
-        {
-            try
-            {
-                _context.Brands.Add(new Brand { Name=Bname});
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest();
-            }
-        }
+       
 
     }
 

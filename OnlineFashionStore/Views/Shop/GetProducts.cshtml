@@ -198,49 +198,49 @@
             </div><!-- /.d-flex justify-content-between -->
 
             <div class="products-grid row row-cols-2 row-cols-md-3" id="products-grid">
-                @for(int i = 0; i < 10; i++)
+                @for (int i = 0; i < 10; i++)
                 {
-                @foreach (var item in Model.Products)
-                {
-                    <div class="product-card-wrapper">
-                        <div class="product-card mb-3 mb-md-4 mb-xxl-5">
-                            <div class="pc__img-wrapper">
-                                <div class="swiper-container background-img js-swiper-slider" data-settings='{"resizeObserver": true}'>
-                                    <div class="swiper-wrapper">
-                                        @foreach (var img in item.Images)
-                                        {
-                                            <div class="swiper-slide">
+                    @foreach (var item in Model.Products)
+                    {
+                        <div class="product-card-wrapper">
+                            <div class="product-card mb-3 mb-md-4 mb-xxl-5">
+                                <div class="pc__img-wrapper">
+                                    <div class="swiper-container background-img js-swiper-slider" data-settings='{"resizeObserver": true}'>
+                                        <div class="swiper-wrapper">
+                                            @foreach (var img in item.Images)
+                                            {
+                                                <div class="swiper-slide">
                                                     <a asp-controller="Shop" asp-action="ProductDetails" asp-route-id="@item.Id"><img loading="lazy" src="~/images/products/@img.ImageUrl" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img"></a>
-                                            </div>
-                                        }
+                                                </div>
+                                            }
+                                        </div>
+                                        <span class="pc__img-prev"><svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_sm" /></svg></span>
+                                        <span class="pc__img-next"><svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_sm" /></svg></span>
                                     </div>
-                                    <span class="pc__img-prev"><svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_sm" /></svg></span>
-                                    <span class="pc__img-next"><svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_sm" /></svg></span>
-                                </div>
-                                <button class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium js-add-cart js-open-aside" data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
-                            </div>
-
-                            <div class="pc__info position-relative">
-                                <p class="pc__category">@item.Category.Name</p>
-                                <h6 class="pc__title"><a href="product1_simple.html">@item.Name</a></h6>
-                                <div class="product-card__price d-flex">
-                                    <span class="money price">$@item.Price</span>
+                                    @* <button class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium add-cart js-open-aside" data-aside="cartDrawer" title="Add To Cart" data-product-id="@item.Id">Add To Cart</button> *@
                                 </div>
 
-                                <button class=".test">Test</button>
-                                <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
-                                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
-                                </button>
+                                <div class="pc__info position-relative">
+                                    <p class="pc__category">@item.Category.Name</p>
+                                    <h6 class="pc__title"><a href="product1_simple.html">@item.Name</a></h6>
+                                    <div class="product-card__price d-flex">
+                                        <span class="money price">$@item.Price</span>
+                                    </div>
+
+                                    <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
+                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                }
+                    }
                 }
 
 
             </div><!-- /.products-grid row -->
 
             <nav class="shop-pages d-flex justify-content-between mt-3" aria-label="Page navigation">
+                <button id="cris">Ayax</button>
                 <a href="#" class="btn-link d-inline-flex align-items-center">
                     <svg class="me-1" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_sm" /></svg>
                     <span class="fw-medium">PREV</span>
@@ -260,5 +260,59 @@
     </section><!-- /.shop-main container -->
 </main>
 
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="~/js/session.js"></script>
+
+
+@section Scripts {
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="~/js/Session.js"></script>
+   @*  <script>
+        //  data: { name='Wishon' },
+        $(document).ready(function () {
+            $('.test').each(function () {
+                $(this).click(function () {
+                    $.ajax({
+                        url: '/Shop/AddBrand',
+                        type: 'POST',
+                        success: function (response) {
+                            alert('başarıyla tamamlandı:', response);
+                        },
+                        error: function () {
+                            alert('İşlem sırasında bir hata oluştu:');
+                        }
+                    });
+
+
+                });
+            });
+        });
+
+       
+        function addToCart(productId) {
+            $.ajax({
+                url: '/Cart/Add',
+                type: 'POST',
+                data: { productId: productId },
+                success: function (response) {
+                    
+                    updateCart();
+                },
+                error: function () {
+                    alert('Ürün sepete eklenirken bir hata oluştu.');
+                }
+            });
+        }
+        function updateCart() {
+            $.ajax({
+                url: '/Cart/GetCart',
+                type: 'GET',
+                success: function (response) {
+                    $('#cartDrawer').html(response);
+                },
+                error: function () {
+                    alert('Sepet içeriği alınırken bir hata oluştu.');
+                }
+            });
+        }
+    </script> *@
+}

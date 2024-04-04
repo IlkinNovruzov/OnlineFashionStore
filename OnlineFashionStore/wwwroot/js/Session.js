@@ -32,22 +32,3 @@
 //        });
 //    });
 //});
-$(document).ready(function () {
-    $(".test").each(function () {
-        $(this).click(function () {
-            $.ajax({
-                url: '/Shop/AddBrand',
-                type: 'POST',
-                data: { Bname="Wishon" },
-                success: function (response) {
-                    alert('başarıyla tamamlandı:', response);
-                },
-                error: function () {
-                    alert('İşlem sırasında bir hata oluştu:');
-                }
-            });
-
-
-        });
-    });
-});

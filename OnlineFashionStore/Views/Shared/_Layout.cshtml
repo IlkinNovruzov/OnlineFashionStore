@@ -186,7 +186,7 @@
         <div class="container d-flex align-items-center h-100">
             <a class="mobile-nav-activator d-block position-relative" href="#">
                 <svg class="nav-icon" width="25" height="18" viewBox="0 0 25 18" xmlns="http://www.w3.org/2000/svg"><use href="#icon_nav" /></svg>
-                <button class="btn-close-lg position-absolute top-0 start-0 w-100"></button>
+                <button class="btn-close-lg position-absolute top-0 start-0 w-100">.</button>
             </a>
 
             <div class="logo">
@@ -340,13 +340,16 @@
 
                 <nav class="navigation">
                     <ul class="navigation__list list-unstyled d-flex">
+
                         <li class="navigation__item">
                             <a href="Home/Index" class="navigation__link">Home</a>
-                       
+
                         </li>
+
+
                         <li class="navigation__item">
                             <a asp-controller="Shop" asp-action="GetProducts" class="navigation__link">Shop</a>
-                     
+
                         </li>
                         <li class="navigation__item">
                             <a href="Blog/Index" class="navigation__link">Blog</a>
@@ -378,7 +381,7 @@
                     {
                         <h3>Welcome @User.Identity.Name!</h3>
                         <a class="header-tools__item" asp-controller="Home" asp-action="Logout">
-                           Logout
+                            Logout
                         </a>
                     }
                     <div class="header-tools__item hover-container">
@@ -599,77 +602,56 @@
     <!---------------- Cart Drawer --------------->
     <div class="aside aside_right overflow-hidden cart-drawer" id="cartDrawer">
         <div class="aside-header d-flex align-items-center">
-            <h3 class="text-uppercase fs-6 mb-0">SHOPPING BAG ( <span class="cart-amount js-cart-items-count">1</span> ) </h3>
+            <h3 class="text-uppercase fs-6 mb-0">SHOPPING BAG ( <span class="cart-amount js-cart-items-count"></span> ) </h3>
             <button class="btn-close-lg js-close-aside btn-close-aside ms-auto"></button>
         </div><!-- /.aside-header -->
 
         <div class="aside-content cart-drawer-items-list">
-            <div class="cart-drawer-item d-flex position-relative">
-                <div class="position-relative">
-                    <img loading="lazy" class="cart-drawer-item__img" src="~/site/images/cart-item-1.jpg" />
-                </div>
-                <div class="cart-drawer-item__info flex-grow-1">
-                    <h6 class="cart-drawer-item__title fw-normal">Zessi Dresses</h6>
-                    <p class="cart-drawer-item__option text-secondary">Color: Yellow</p>
-                    <p class="cart-drawer-item__option text-secondary">Size: L</p>
-                    <div class="d-flex align-items-center justify-content-between mt-1">
-                        <div class="qty-control position-relative">
-                            <input type="number" name="quantity" value="1" min="1" class="qty-control__number border-0 text-center">
-                            <div class="qty-control__reduce text-start">-</div>
-                            <div class="qty-control__increase text-end">+</div>
-                        </div><!-- .qty-control -->
-                        <span class="cart-drawer-item__price money price">$99</span>
-                    </div>
-                </div>
+            @await Component.InvokeAsync("Test")
 
-                <button class="btn-close-xs position-absolute top-0 end-0 js-cart-item-remove"></button>
+            @*  <div class="cart-drawer-item d-flex position-relative">
+            <div class="position-relative">
+            <img loading="lazy" class="cart-drawer-item__img" src="~/site/images/cart-item-2.jpg" />
+            </div>
+            <div class="cart-drawer-item__info flex-grow-1">
+            <h6 class="cart-drawer-item__title fw-normal">Kirby T-Shirt</h6>
+            <p class="cart-drawer-item__option text-secondary">Color: Black</p>
+            <p class="cart-drawer-item__option text-secondary">Size: XS</p>
+            <div class="d-flex align-items-center justify-content-between mt-1">
+            <div class="qty-control position-relative">
+            <input type="number" name="quantity" value="4" min="1" class="qty-control__number border-0 text-center">
+            <div class="qty-control__reduce text-start">-</div>
+            <div class="qty-control__increase text-end">+</div>
+            </div><!-- .qty-control -->
+            <span class="cart-drawer-item__price money price">$89</span>
+            </div>
+            </div>
+
+            <button class="btn-close-xs position-absolute top-0 end-0 js-cart-item-remove"></button>
             </div><!-- /.cart-drawer-item d-flex -->
 
             <hr class="cart-drawer-divider" />
 
             <div class="cart-drawer-item d-flex position-relative">
-                <div class="position-relative">
-                    <img loading="lazy" class="cart-drawer-item__img" src="~/site/images/cart-item-2.jpg" />
-                </div>
-                <div class="cart-drawer-item__info flex-grow-1">
-                    <h6 class="cart-drawer-item__title fw-normal">Kirby T-Shirt</h6>
-                    <p class="cart-drawer-item__option text-secondary">Color: Black</p>
-                    <p class="cart-drawer-item__option text-secondary">Size: XS</p>
-                    <div class="d-flex align-items-center justify-content-between mt-1">
-                        <div class="qty-control position-relative">
-                            <input type="number" name="quantity" value="4" min="1" class="qty-control__number border-0 text-center">
-                            <div class="qty-control__reduce text-start">-</div>
-                            <div class="qty-control__increase text-end">+</div>
-                        </div><!-- .qty-control -->
-                        <span class="cart-drawer-item__price money price">$89</span>
-                    </div>
-                </div>
+            <div class="position-relative">
+            <img loading="lazy" class="cart-drawer-item__img" src="~/site/images/cart-item-3.jpg" />
+            </div>
+            <div class="cart-drawer-item__info flex-grow-1">
+            <h6 class="cart-drawer-item__title fw-normal">Cableknit Shawl</h6>
+            <p class="cart-drawer-item__option text-secondary">Color: Green</p>
+            <p class="cart-drawer-item__option text-secondary">Size: L</p>
+            <div class="d-flex align-items-center justify-content-between mt-1">
+            <div class="qty-control position-relative">
+            <input type="number" name="quantity" value="3" min="1" class="qty-control__number border-0 text-center">
+            <div class="qty-control__reduce text-start">-</div>
+            <div class="qty-control__increase text-end">+</div>
+            </div><!-- .qty-control -->
+            <span class="cart-drawer-item__price money price">$129</span>
+            </div>
+            </div>
 
-                <button class="btn-close-xs position-absolute top-0 end-0 js-cart-item-remove"></button>
-            </div><!-- /.cart-drawer-item d-flex -->
-
-            <hr class="cart-drawer-divider" />
-
-            <div class="cart-drawer-item d-flex position-relative">
-                <div class="position-relative">
-                    <img loading="lazy" class="cart-drawer-item__img" src="~/site/images/cart-item-3.jpg" />
-                </div>
-                <div class="cart-drawer-item__info flex-grow-1">
-                    <h6 class="cart-drawer-item__title fw-normal">Cableknit Shawl</h6>
-                    <p class="cart-drawer-item__option text-secondary">Color: Green</p>
-                    <p class="cart-drawer-item__option text-secondary">Size: L</p>
-                    <div class="d-flex align-items-center justify-content-between mt-1">
-                        <div class="qty-control position-relative">
-                            <input type="number" name="quantity" value="3" min="1" class="qty-control__number border-0 text-center">
-                            <div class="qty-control__reduce text-start">-</div>
-                            <div class="qty-control__increase text-end">+</div>
-                        </div><!-- .qty-control -->
-                        <span class="cart-drawer-item__price money price">$129</span>
-                    </div>
-                </div>
-
-                <button class="btn-close-xs position-absolute top-0 end-0 js-cart-item-remove"></button>
-            </div><!-- /.cart-drawer-item d-flex -->
+            <button class="btn-close-xs position-absolute top-0 end-0 js-cart-item-remove"></button>
+            </div><!-- /.cart-drawer-item d-flex --> *@
 
         </div><!-- /.aside-content -->
 
@@ -682,8 +664,7 @@
             <a asp-controller="Shop" asp-action="ShopCart" class="btn btn-light mt-3 d-block">View Cart</a>
             <a asp-controller="Sale" asp-action="Checkout" class="btn btn-primary mt-3 d-block">Checkout</a>
         </div><!-- /.aside-content -->
-    </div><!-- /.aside -->
-    <!----------------- Sitemap ----------------->
+    </div>    <!----------------- Sitemap ----------------->
     <div class="modal fade" id="siteMap" tabindex="-1" aria-labelledby="siteMapModal" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen">
             <div class="sitemap d-flex">
@@ -1061,7 +1042,7 @@
         </div><!-- /.modal-dialog -->
     </div><!-- /.quickview position-fixed -->
     <!----------------- Newsletter Popup ----------------->
-   ><!-- /.newsletter-popup position-fixed -->
+    ><!-- /.newsletter-popup position-fixed -->
     <!---------------- Go To Top ---------------->
     <div id="scrollTop" class="visually-hidden end-0"></div>
 
@@ -1075,7 +1056,99 @@
     <!-- <script src="js/plugins/sticky.min.js"></script> -->
     <script src="~/site/js/plugins/swiper.min.js"></script>
     <script src="~/site/js/plugins/countdown.js"></script>
+    @RenderSection("Scripts", required: false)
+    <script>
+     
+        function addToCart(productId) {
+            $.ajax({
+                url: '/Cart/Add?id=' + productId,
+                type: 'POST',
+                success: function (response) {
+                    if (response.success) {
+                        alert('Ürün sepete başarıyla eklendi!');
+                    } else {
+                        alert('Ürün sepete eklenirken bir hata oluştu.');
+                    }
+                },
+                error: function () {
+                    alert('Failed.');
+                }
+            });
+        }
 
+        function decreaseQuantity(productId) {
+            $.ajax({
+                url: '/Cart/Decrease?id=' + productId,
+                type: 'POST',
+                success: function (response) {
+                    $('#mainContent').load('/Cart/ShopCart #cartContent');
+                    alert('Ürün miktarı azaltıldı.');
+                },
+                error: function () {
+                    alert('Failed.');
+                }
+            });
+        }
+
+        function removeFromCart(productId) {
+            $.ajax({
+                url: '/Cart/Remove?id=' + productId,
+                type: 'POST',
+                success: function (response) {
+                    $('#mainContent').load('/Cart/ShopCart #cartContent');
+                    alert('Ürün sepetten kaldırıldı.');
+                },
+                error: function () {
+                    alert('Failed.');
+                }
+            });
+        }
+
+        // Sepeti temizleme AJAX isteği
+        // function clearCart() {
+        //     $.ajax({
+        //         url: '/Cart/Clear',
+        //         type: 'POST',
+        //         success: function (response) {
+        //             // Sepet içeriğini güncelleme işlemi
+        //             $('#cartContent').load('/Cart/ShopCart #cartContent');
+        //             // Başarılı mesaj gösterme
+        //             alert('Sepet temizlendi.');
+        //         },
+        //         error: function () {
+        //             alert('Sepet temizlenirken bir hata oluştu.');
+        //         }
+        //     });
+        // }
+        $(document).ready(function () {
+            $('.add-cart').click(function () {
+                var productId = $(this).data('product-id');
+                addToCart(productId);
+            });
+        });
+        $(document).on('click', '.add-cart', function () {
+            var productId = $(this).data('product-id');
+            alert(productId);
+            addToCart(productId);
+        });
+        $(document).on('click', '.qty-control__reduce', function () {
+            var productId = $(this).data('product-id');
+            alert(productId);
+            decreaseQuantity(productId);
+        });
+        $(document).on('click', '.qty-control__increase', function () {
+            var productId = $(this).data('product-id');
+            alert(productId);
+            addToCart(productId);
+        });
+        $(document).on('click', '.js-cart-item-remove', function () {
+            var productId = $(this).data('product-id');
+            alert(productId);
+            removeFromCart(productId);
+        });
+        // var parentItem = $(this).closest('.cart-drawer-item');
+        // var productId = parentItem.data('product-id');
+    </script>
     <!-------------- Footer Scripts ------------->
     <script src="~/site/js/theme.js"></script>
 

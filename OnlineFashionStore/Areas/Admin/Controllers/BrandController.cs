@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OnlineFashionStore.Areas.Admin.Models.ViewModels;
 using OnlineFashionStore.Models;
+using OnlineFashionStore.Models.DataModels;
 
 namespace OnlineFashionStore.Areas.Admin.Controllers
 {
@@ -12,40 +12,47 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
         {
             _context = context;
         }
-        public IActionResult GetBrands()
+        public IActionResult Index()
         {
-            var model = new BrandVM()
-            {
-                Brands = _context.Brands.ToList()
-            };
-            return View(model);
+            return View();
+        }
+        public JsonResult BrandList()
+        {
+            return Json(_context.Brands.ToList());
         }
         [HttpPost]
-        public async Task<IActionResult> Add(BrandVM model)
+        public JsonResult Add(Brand brand)
         {
-            await _context.Brands.AddAsync(model.Brand);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("GetBrands");
+            _context.Brands.Add(brand);
+            _context.SaveChanges();
+            return Json("Added.");
+        }
+        [HttpGet]
+        public JsonResult Edit(int id)
+        {
+            var brand = _context.Brands.FirstOrDefault(b => b.Id == id);
+            return Json(brand);
         }
         [HttpPost]
-        public async Task<IActionResult> Edit(BrandVM model)
+        public JsonResult Update(Brand brand)
         {
-            _context.Brands.Update(model.Brand);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("GetBrands");
+            _context.Brands.Update(brand);
+            _context.SaveChanges();
+            return Json("Succesfully.");
         }
-        public async Task<IActionResult> Delete(int id)
+        [HttpPost]
+        public JsonResult Delete(int id)
         {
-            var brand = _context.Brands.FirstOrDefault(x => x.Id == id);
-            if (brand == null)
+            var brand = _context.Brands.FirstOrDefault(b => b.Id == id);
+            if (brand != null)
             {
-                return RedirectToAction("GetBrands");
+                _context.Brands.Remove(brand);
+                _context.SaveChanges();
+                return Json("Succesfully.");
             }
-            _context.Brands.Remove(brand);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("GetBrands");
+            return Json("Not Found.");
+
         }
-       
-        
     }
 }
+
