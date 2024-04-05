@@ -7,10 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\Account\Confirmation.cshtml" />
     <Content Remove="wwwroot\js\Session.js" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Views\Account\Confirmation.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />
     <None Include="Views\Shared\Error.cshtml" />
@@ -42,6 +44,14 @@
     </PackageReference>
     <PackageReference Include="MimeKit" Version="4.4.0" />
     <PackageReference Include="Stripe.net" Version="43.20.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\Account\Confirmation.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\Account\Confirmation.cshtml" />
   </ItemGroup>
 
 </Project>
