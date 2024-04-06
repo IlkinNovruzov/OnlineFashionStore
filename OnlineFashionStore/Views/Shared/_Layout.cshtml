@@ -607,7 +607,7 @@
         </div><!-- /.aside-header -->
 
         <div class="aside-content cart-drawer-items-list">
-            @await Component.InvokeAsync("Test")
+            @await Component.InvokeAsync("Cart")
 
             @*  <div class="cart-drawer-item d-flex position-relative">
             <div class="position-relative">
@@ -661,8 +661,8 @@
                 <h6 class="fs-base fw-medium">SUBTOTAL:</h6>
                 <span class="cart-subtotal fw-medium">$176.00</span>
             </div><!-- /.d-flex justify-content-between -->
-            <a asp-controller="Shop" asp-action="ShopCart" class="btn btn-light mt-3 d-block">View Cart</a>
-            <a asp-controller="Sale" asp-action="Checkout" class="btn btn-primary mt-3 d-block">Checkout</a>
+            <a asp-controller="Cart" asp-action="ShopCart" class="btn btn-light mt-3 d-block">View Cart</a>
+            <a asp-controller="CheckOut" asp-action="Checkout" class="btn btn-primary mt-3 d-block">Checkout</a>
         </div><!-- /.aside-content -->
     </div>    <!----------------- Sitemap ----------------->
     <div class="modal fade" id="siteMap" tabindex="-1" aria-labelledby="siteMapModal" aria-hidden="true">

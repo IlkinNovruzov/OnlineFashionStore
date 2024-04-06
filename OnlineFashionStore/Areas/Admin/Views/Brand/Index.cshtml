@@ -119,7 +119,10 @@
         }
 
         $('#btnAdd').click(function () {
+            Clear();
             $('#AddModal').modal('show');
+            $('#Save').css('display', 'block');
+            $('#Update').css('display', 'none');
         });
         function Insert() {
         
@@ -170,6 +173,7 @@
                     alert('Unable to fetch data');
                 }
             });
+            Clear();
         }
         function Update() {
             var formData = new Object();
@@ -212,5 +216,9 @@
                 }
             });
         }
+         function Clear(){
+            $('#Id').val(''); 
+            $('#Name').val('');
+         }
     </script>
 }

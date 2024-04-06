@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Stripe.Checkout;
 using OnlineFashionStore.Models.DataModels;
+using OnlineFashionStore.Models.ViewModels;
+using OnlineFashionStore.Extensions;
 namespace OnlineFashionStore.Controllers
 {
     [Authorize]
@@ -9,15 +11,8 @@ namespace OnlineFashionStore.Controllers
     {
         public IActionResult Checkout()
         {
-            var list = new List<Product>()
-            {
-                new Product
-                {
-                    Name="sss",
-                    Price=233,
-                    StockQuantity=2
-                }
-            };
+            var list = HttpContext.Session.GetJson<List<CartItem>>("Cart");
+           
             var domain = "https://localhost:44325/";
             var options = new SessionCreateOptions()
             {
@@ -33,14 +28,14 @@ namespace OnlineFashionStore.Controllers
                     PriceData = new SessionLineItemPriceDataOptions
                     {
 
-                        UnitAmount = (long)(item.Price * item.StockQuantity),
+                        UnitAmount = (long)(item.Price * item.Quantity),
                         Currency = "usd",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            Name = item.Name.ToString()
+                            Name = item.ProductName.ToString()
                         }
                     },
-                    Quantity = item.StockQuantity
+                    Quantity = item.Quantity
                 };
                 options.LineItems.Add(sessionListItem);
             }

@@ -11,7 +11,6 @@ namespace OnlineFashionStore.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
-        private static SignInManager<AppUser> SignInManager;
         public ShopController(AppDbContext context, UserManager<AppUser> userManager)
         {
             _context = context;
@@ -36,7 +35,7 @@ namespace OnlineFashionStore.Controllers
             {
                 Product = await _context.Products.Include(p => p.Images).Include(a => a.Attributes).Include(p => p.ProductColors).ThenInclude(pc => pc.Color).Include(p => p.ProductSizes).ThenInclude(ps => ps.Size).FirstOrDefaultAsync(p => p.Id == id),
                 Reviews = _context.Reviews.Where(r => r.ProductId == id).Include(r => r.User).ToList(),
-                Review = (user != null && SignInManager.IsSignedIn(User)) ? new Review { ProductId = id, UserId = user.Id } : null
+                Review = (user != null && User.Identity.IsAuthenticated) ? new Review { ProductId = id, UserId = user.Id } : null
             };
 
             return View(model);

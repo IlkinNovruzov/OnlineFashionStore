@@ -5,10 +5,10 @@ using OnlineFashionStore.Models.ViewModels;
 
 namespace OnlineFashionStore.ViewCompanents
 {
-    public class Test : ViewComponent
+    public class Cart : ViewComponent
     {
         private readonly AppDbContext _context;
-        public Test(AppDbContext context)
+        public Cart(AppDbContext context)
         {
             _context = context;
 

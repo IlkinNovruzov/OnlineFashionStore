@@ -1,6 +1,7 @@
 ﻿using MailKit.Net.Smtp;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using MimeKit;
 using OnlineFashionStore.Extensions;
 using OnlineFashionStore.Models.DataModels;
@@ -68,21 +69,6 @@ namespace OnlineFashionStore.Controllers
                     var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = appUser.Id, token = token }, Request.Scheme);
                     await _emailService.SendEmailAsync(appUserRegister.Email, "Confirm your email", $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>.");
 
-                    //var mimeMessage = new MimeMessage();
-                    //mimeMessage.From.Add(new MailboxAddress("Ilkin", "uomostore004@gmail.com"));
-                    //mimeMessage.To.Add(MailboxAddress.Parse(appUserRegister.Email));
-                    //mimeMessage.Subject = "Admin";
-                    //mimeMessage.Body = new TextPart("plain") { Text = $"Please confirm your account by <a href='{confirmationLink}'>clicking here</a>." };
-
-                    //using var client = new SmtpClient();
-                    //await client.ConnectAsync("smtp.gmail.com", 465, true);
-                    //await client.AuthenticateAsync("uomostore004@gmail.com", "vzza dzjt aaas okbo");
-                    //await client.SendAsync(mimeMessage);
-                    //await client.DisconnectAsync(true);
-                    //var msg = new MimeMessage();
-                    //var mailFrom = new MailboxAddress("Admin", "uomostore004@gmail.com");
-                    //var mailTo = new MailboxAddress("User", appUserRegister.Email);
-                    // await _emailService.SendEmailAsync(appUser.Email, "Confirm Email", $"{code}");
                     await _userManager.AddToRoleAsync(appUser, "User");
 
                     return RedirectToAction("Confirmation", "Account");
@@ -120,11 +106,93 @@ namespace OnlineFashionStore.Controllers
 
             return RedirectToAction("Error", "Home");
         }
+
         [HttpGet]
         public IActionResult Confirmation()
         {
             return View();
         }
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                return BadRequest();
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                TempData["Message"] = "An email has been sent to your email address with instructions on how to reset your password.";
+                return RedirectToAction("Message");
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var callbackUrl = Url.Action("ResetPassword", "Account", new { email = email, token = token }, Request.Scheme);
+            await _emailService.SendEmailAsync(email, "Reset Password", $"Please reset your password by <a href='{callbackUrl}'>clicking here</a>.");
+
+            TempData["Message"] = "An email has been sent to your email address with instructions on how to reset your password.";
+            return RedirectToAction("Message");
+        }
+
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (token == null || email == null)
+            {
+                return RedirectToAction("Error");
+            }
+
+            var model = new ResetPasswordViewModel { Token = token, Email = email };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    return RedirectToAction("Error");
+                }
+                if (model.Password != model.ConfirmPassword)
+                {
+                    ModelState.AddModelError(string.Empty, "The password and confirmation password do not match.");
+                    return View(model);
+                }
+                var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    TempData["Message"] = "Your password has been reset successfully.";
+                    return RedirectToAction("Message");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+
+                return View(model);
+            }
+
+            return View(model);
+        }
+
+        [HttpGet]
+        public IActionResult Message()
+        {
+            ViewBag.Message = TempData["Message"];
+            return View();
+        }
+
 
     }
 }
