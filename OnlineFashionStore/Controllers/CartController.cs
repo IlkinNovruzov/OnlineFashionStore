@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineFashionStore.Extensions;
 using OnlineFashionStore.Models;
 using OnlineFashionStore.Models.ViewModels;
@@ -25,21 +26,49 @@ namespace OnlineFashionStore.Controllers
 
             return View(cartVM);
         }
-        public async Task<IActionResult> Add(int id)
+        //public async Task<IActionResult> Add(int id)
+        //{
+        //    var product = await _context.Products.FindAsync(id);
+
+        //    List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+
+        //    CartItem cartItem = cart.Where(c => c.ProductId == id).FirstOrDefault();
+
+        //    if (cartItem == null)
+        //    {
+        //        cart.Add(new CartItem(product));
+        //    }
+        //    else
+        //    {
+        //        cartItem.Quantity += 1;
+        //    }
+
+        //    HttpContext.Session.SetJson("Cart", cart);
+
+        //    TempData["Success"] = "The product has been added!";
+        //    return Json(new { success = true });
+        //    //return RedirectToAction("ShopCart");
+        //}
+        [HttpPost]
+        public async Task<IActionResult> Add(CartItem cartItem)
         {
-            var product = await _context.Products.FindAsync(id);
+            var product =await _context.Products.Include(p => p.Images).FirstOrDefaultAsync(p => p.Id == cartItem.ProductId);
 
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
 
-            CartItem cartItem = cart.Where(c => c.ProductId == id).FirstOrDefault();
+            CartItem item = cart.FirstOrDefault(c => c.ProductId == cartItem.ProductId);
 
-            if (cartItem == null)
+            if (item == null)
             {
-                cart.Add(new CartItem(product));
+                var newItem = new CartItem(product);
+                newItem.Quantity = cartItem.Quantity;
+                newItem.Color = cartItem.Color;
+                newItem.Size = cartItem.Size;
+                cart.Add(newItem);
             }
             else
             {
-                cartItem.Quantity += 1;
+                item.Quantity += cartItem.Quantity;
             }
 
             HttpContext.Session.SetJson("Cart", cart);

@@ -8,8 +8,9 @@ namespace OnlineFashionStore.Models.ViewModels
         public string ProductName { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
-        public int SizeId { get; set; }
-        public int ColorId { get; set; }
+        public string Size { get; set; }
+        public string Color { get; set; }
+        public string ImageUrl { get; set; }
         public decimal Total
         {
             get { return Quantity * Price; }
@@ -24,7 +25,7 @@ namespace OnlineFashionStore.Models.ViewModels
             ProductId = product.Id;
             ProductName = product.Name;
             Price = product.Price;
-            Quantity = 1;
+            ImageUrl = product.Images[0].ImageUrl;
         }
     }
 }

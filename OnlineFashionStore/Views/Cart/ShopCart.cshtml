@@ -3,29 +3,7 @@
     <div class="mb-4 pb-4"></div>
     <section class="shop-checkout container" id="cartContent">
         <h2 class="page-title">Cart</h2>
-        <div class="checkout-steps">
-            <a asp-controller="Shop" asp-action="ShopCart" class="checkout-steps__item active">
-                <span class="checkout-steps__item-number">01</span>
-                <span class="checkout-steps__item-title">
-                    <span>Shopping Bag</span>
-                    <em>Manage Your Items List</em>
-                </span>
-            </a>
-            <a asp-controller="Sale" asp-action="Checkout" class="checkout-steps__item">
-                <span class="checkout-steps__item-number">02</span>
-                <span class="checkout-steps__item-title">
-                    <span>Shipping and Checkout</span>
-                    <em>Checkout Your Items List</em>
-                </span>
-            </a>
-            <a href="shop_order_complete.html" class="checkout-steps__item">
-                <span class="checkout-steps__item-number">03</span>
-                <span class="checkout-steps__item-title">
-                    <span>Confirmation</span>
-                    <em>Review And Submit Your Order</em>
-                </span>
-            </a>
-        </div>
+        @await Html.PartialAsync("_PartialCheckOutSteps")
         <div class="shopping-cart">
             <div class="cart-table__wrapper">
                 <table class="cart-table">
@@ -45,15 +23,15 @@
                             <tr>
                                 <td>
                                     <div class="shopping-cart__product-item">
-                                        <img loading="lazy" src="../images/cart-item-1.jpg" width="120" height="120" alt="" />
+                                        <img loading="lazy" src="~/images/products/@item.ImageUrl" width="120" height="120" alt="" />
                                     </div>
                                 </td>
                                 <td>
                                     <div class="shopping-cart__product-item__detail">
                                         <h4>@item.ProductName</h4>
                                         <ul class="shopping-cart__product-item__options">
-                                            <li>Color: Yellow</li>
-                                            <li>Size: L</li>
+                                            <li>Color: @item.Color</li>
+                                            <li>Size: @item.Size</li>
                                         </ul>
                                     </div>
                                 </td>
@@ -98,7 +76,7 @@
                             <tbody>
                                 <tr>
                                     <th>Subtotal</th>
-                                    <td>$1300</td>
+                                    <td>@Model.GrandTotal</td>
                                 </tr>
                                 <tr>
                                     <th>Shipping</th>
@@ -134,7 +112,7 @@
                     </div>
                     <div class="mobile_fixed-btn_wrapper">
                         <div class="button-wrapper container">
-                            <button class="btn btn-primary btn-checkout">PROCEED TO CHECKOUT</button>
+                            <a class="btn btn-primary btn-checkout" asp-controller="CheckOut" asp-action="CheckOut">PROCEED TO CHECKOUT</a>
                         </div>
                     </div>
                 </div>
