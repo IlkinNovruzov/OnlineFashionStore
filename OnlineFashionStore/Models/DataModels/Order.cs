@@ -17,7 +17,7 @@ namespace OnlineFashionStore.Models.DataModels
         public string Address { get; set; }
         public string PaymentMethod { get; set; }
         public int UserId { get; set; }
-        public AppUser AppUser { get; set; }
+        public AppUser User { get; set; }
 
         public List<OrderItem> OrderItems { get; set; }
     }

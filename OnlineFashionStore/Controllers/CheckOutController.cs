@@ -6,6 +6,8 @@ using OnlineFashionStore.Models.ViewModels;
 using OnlineFashionStore.Extensions;
 using OnlineFashionStore.Models;
 using Microsoft.AspNetCore.Identity;
+using Stripe.Climate;
+using Microsoft.EntityFrameworkCore;
 
 namespace OnlineFashionStore.Controllers
 {
@@ -19,10 +21,13 @@ namespace OnlineFashionStore.Controllers
             _context = context;
             _userManager = userManager;
         }
-        public IActionResult Checkout()
+        private static Models.DataModels.Order tempOrder;
+        private static decimal total=0;
+        [HttpPost]
+        public IActionResult Checkout(Models.DataModels.Order order)
         {
             var list = HttpContext.Session.GetJson<List<CartItem>>("Cart");
-           
+            tempOrder = order;
             var domain = "https://localhost:44325/";
             var options = new SessionCreateOptions()
             {
@@ -37,7 +42,7 @@ namespace OnlineFashionStore.Controllers
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmountDecimal=item.Price * item.Quantity,
+                        UnitAmountDecimal = item.Total*100,
                         Currency = "usd",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
@@ -46,53 +51,56 @@ namespace OnlineFashionStore.Controllers
                     },
                     Quantity = item.Quantity
                 };
+                total += item.Total;
                 options.LineItems.Add(sessionListItem);
             }
-            var service=new SessionService();
+            var service = new SessionService();
             Session session = service.Create(options);
             TempData["Session"] = session.Id;
             Response.Headers.Add("Location", session.Url);
             return new StatusCodeResult(303);
         }
+        [HttpGet]
         public IActionResult Billing()
         {
             return View();
         }
-        [HttpPost]
-        public async Task<IActionResult> OrderConfirmation(Order order)
+        public async Task<IActionResult> OrderConfirmation()
         {
             var service = new SessionService();
             Session session = service.Get(TempData["Session"].ToString());
-            if (session.PaymentStatus == "Paid")
+            if (session.PaymentStatus == "paid")
             {
                 var user = await _userManager.GetUserAsync(User);
-                order.UserId = user.Id;
-                order.Date = DateTime.Now;
+                var random = new Random();
+                tempOrder.UserId = user.Id;
+                tempOrder.OrderNumber = random.Next(100000, 1000000);
+                tempOrder.Date = DateTime.Now;
+                tempOrder.Total = total;
 
-                _context.Orders.Add(order);
+                _context.Orders.Add(tempOrder);
                 _context.SaveChanges();
-
-                var list = HttpContext.Session.GetJson<List<CartItem>>("Cart");
-                foreach (var item in list)
+                var cartList = HttpContext.Session.GetJson<List<CartItem>>("Cart");
+                foreach (var item in cartList)
                 {
                     var orderDetail = new OrderItem
                     {
-                        OrderId = order.Id,
+                        OrderId = tempOrder.Id,
                         ProductId = item.ProductId,
                         Quantity = item.Quantity,
-                        Subtotal = item.Price,
-                        Color=item.Color,
-                        Size=item.Size
+                        Subtotal = item.Total,
+                        Color = item.Color,
+                        Size = item.Size
                     };
                     _context.OrderItems.Add(orderDetail);
                 }
                 _context.SaveChanges();
-                return View("Success");
+                var _order = _context.Orders.Include(x => x.OrderItems).ThenInclude(x=>x.Product).FirstOrDefault(x=>x.Id==tempOrder.Id);
+                return View("Success",_order);
             }
-            return View("Login");
+            return View("Fail");
         }
 
-        //public IActionResult OrderSuccess()
 
 
     }

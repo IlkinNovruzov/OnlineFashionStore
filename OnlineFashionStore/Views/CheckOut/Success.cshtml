@@ -1,8 +1,8 @@
-﻿<main>
+﻿@model Order
+<main>
     <div class="mb-4 pb-4"></div>
     <section class="shop-checkout container">
         <h2 class="page-title">Order Received</h2>
-        @await Html.PartialAsync("_PartialCheckOutSteps")
         <div class="order-complete">
             <div class="order-complete__message">
                 <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -15,19 +15,19 @@
             <div class="order-info">
                 <div class="order-info__item">
                     <label>Order Number</label>
-                    <span>13119</span>
+                    <span>@Model.OrderNumber</span>
                 </div>
                 <div class="order-info__item">
                     <label>Date</label>
-                    <span>27/10/2023</span>
+                    <span>@Model.Date.ToString("d")</span>
                 </div>
                 <div class="order-info__item">
                     <label>Total</label>
-                    <span>$81.40</span>
+                    <span>$@Model.Total</span>
                 </div>
                 <div class="order-info__item">
                     <label>Paymetn Method</label>
-                    <span>Direct Bank Transfer</span>
+                    <span>@Model.PaymentMethod</span>
                 </div>
             </div>
             <div class="checkout__totals-wrapper">
@@ -41,41 +41,32 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach(var item in Model.OrderItems)
+                            {
                             <tr>
                                 <td>
-                                    Zessi Dresses x 2
+                                    @item.Product.Name x @item.Quantity
                                 </td>
                                 <td align="right">
-                                    $32.50
+                                    $@item.Subtotal
                                 </td>
                             </tr>
-                            <tr>
-                                <td>
-                                    Kirby T-Shirt
-                                </td>
-                                <td align="right">
-                                    $29.90
-                                </td>
-                            </tr>
+                            }
                         </tbody>
                     </table>
                     <table class="checkout-totals">
                         <tbody>
                             <tr>
                                 <th>SUBTOTAL</th>
-                                <td align="right">$62.40</td>
+                                <td align="right">$@Model.Total</td>
                             </tr>
                             <tr>
                                 <th>SHIPPING</th>
                                 <td align="right">Free shipping</td>
                             </tr>
                             <tr>
-                                <th>VAT</th>
-                                <td align="right">$19</td>
-                            </tr>
-                            <tr>
                                 <th>TOTAL</th>
-                                <td align="right">$81.40</td>
+                                <td align="right">$@Model.Total</td>
                             </tr>
                         </tbody>
                     </table>

@@ -4,7 +4,7 @@
     <section class="shop-checkout container">
         <h2 class="page-title">Shipping and Checkout</h2>
         @await Html.PartialAsync("_PartialCheckOutSteps")
-        <form name="checkout-form" asp-controller="CheckOut" asp-action="OrderConfirmation">
+        <form name="checkout-form" asp-controller="CheckOut" asp-action="CheckOut">
             <div class="checkout-form">
                 <div class="billing-info__wrapper">
                     <h4>BILLING DETAILS</h4>
@@ -26,19 +26,7 @@
                                 <div class="form-label-fixed hover-container">
                                     <label for="search-dropdown" class="form-label">Country / Region*</label>
                                     <div class="js-hover__open">
-                                        <input asp-for ="Country" type="text" class="form-control form-control-lg search-field__actor search-field__arrow-down" id="search-dropdown" name="search-keyword" readonly href="#" placeholder="Choose a location..." />
-                                    </div>
-                                    <div class="filters-container js-hidden-content mt-2">
-                                        <div class="search-field__input-wrapper">
-                                            <input type="text" class="search-field__input form-control form-control-sm bg-lighter border-lighter" placeholder="Search" />
-                                        </div>
-                                        <ul class="search-suggestion list-unstyled">
-                                            <li class="search-suggestion__item js-search-select">Australia</li>
-                                            <li class="search-suggestion__item js-search-select">Canada</li>
-                                            <li class="search-suggestion__item js-search-select">United Kingdom</li>
-                                            <li class="search-suggestion__item js-search-select">United States</li>
-                                            <li class="search-suggestion__item js-search-select">Turkey</li>
-                                        </ul>
+                                        <input asp-for ="Country" type="text" class="form-control form-control-lg " placeholder="Country" />
                                     </div>
                                 </div>
                             </div>
@@ -65,7 +53,7 @@
                 </div>
                 <div class="checkout__totals-wrapper">
                     <div class="sticky-content">
-                        <div class="checkout__totals">
+                      @*   <div class="checkout__totals">
                             <h3>Your Order</h3>
                             <table class="checkout-cart-items">
                                 <thead>
@@ -75,6 +63,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @foreach(var item in )
                                     <tr>
                                         <td>
                                             Zessi Dresses x 2
@@ -113,10 +102,10 @@
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
+                        </div> *@
                         <div class="checkout__payment-methods">
                             <div class="form-check">
-                                <input asp-for="PaymentMethod" class="form-check-input form-check-input_fill" type="radio" name="checkout_payment_method" id="checkout_payment_method_1" checked>
+                                <input name="PaymentMethod" class="form-check-input form-check-input_fill" value="DirectBankTransfer" type="radio" name="checkout_payment_method" id="checkout_payment_method_1">
                                 <label class="form-check-label" for="checkout_payment_method_1">
                                     Direct bank transfer
                                     <p class="option-detail">
@@ -124,7 +113,7 @@
                                     </p>
                                 </label>
                             </div>
-                            <div class="form-check">
+                          @*   <div class="form-check">
                                 <input class="form-check-input form-check-input_fill" type="radio" name="checkout_payment_method" id="checkout_payment_method_2">
                                 <label class="form-check-label" for="checkout_payment_method_2">
                                     Check payments
@@ -150,12 +139,12 @@
                                         Phasellus sed volutpat orci. Fusce eget lore mauris vehicula elementum gravida nec dui. Aenean aliquam varius ipsum, non ultricies tellus sodales eu. Donec dignissim viverra nunc, ut aliquet magna posuere eget.
                                     </p>
                                 </label>
-                            </div>
+                            </div> *@
                             <div class="policy-text">
                                 Your personal data will be used to process your order, support your experience throughout this website, and for other purposes described in our <a href="terms.html" target="_blank">privacy policy</a>.
                             </div>
                         </div>
-                        <button class="btn btn-primary btn-checkout">PLACE ORDER</button>
+                        <button class="btn btn-primary btn-checkout" type="submit">PLACE ORDER</button>
                     </div>
                 </div>
             </div>
