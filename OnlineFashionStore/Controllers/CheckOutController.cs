@@ -93,6 +93,8 @@ namespace OnlineFashionStore.Controllers
                         Size = item.Size
                     };
                     _context.OrderItems.Add(orderDetail);
+                    var product=_context.Products.FirstOrDefault(p=>p.Id==item.ProductId);
+                    product.StockQuantity -= item.Quantity;
                 }
                 _context.SaveChanges();
                 var _order = _context.Orders.Include(x => x.OrderItems).ThenInclude(x=>x.Product).FirstOrDefault(x=>x.Id==tempOrder.Id);

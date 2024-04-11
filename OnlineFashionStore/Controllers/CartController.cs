@@ -26,34 +26,39 @@ namespace OnlineFashionStore.Controllers
 
             return View(cartVM);
         }
-        //public async Task<IActionResult> Add(int id)
-        //{
-        //    var product = await _context.Products.FindAsync(id);
+        [HttpPost]
+        public async Task<IActionResult> Increase(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
 
-        //    List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
 
-        //    CartItem cartItem = cart.Where(c => c.ProductId == id).FirstOrDefault();
+            CartItem cartItem = cart.Where(c => c.ProductId == id).FirstOrDefault();
 
-        //    if (cartItem == null)
-        //    {
-        //        cart.Add(new CartItem(product));
-        //    }
-        //    else
-        //    {
-        //        cartItem.Quantity += 1;
-        //    }
+            if (cartItem == null)
+            {
+                cart.Add(new CartItem(product));
+            }
+            else
+            {
+                cartItem.Quantity += 1;
+            }
 
-        //    HttpContext.Session.SetJson("Cart", cart);
+            HttpContext.Session.SetJson("Cart", cart);
 
-        //    TempData["Success"] = "The product has been added!";
-        //    return Json(new { success = true });
-        //    //return RedirectToAction("ShopCart");
-        //}
+            TempData["Success"] = "The product has been added!";
+            return Json(new { success = true });
+            //return RedirectToAction("ShopCart");
+        }
         [HttpPost]
         public async Task<IActionResult> Add(CartItem cartItem)
         {
-            var product =await _context.Products.Include(p => p.Images).FirstOrDefaultAsync(p => p.Id == cartItem.ProductId);
-
+            var product = await _context.Products.Include(p => p.Images).FirstOrDefaultAsync(p => p.Id == cartItem.ProductId);
+            
+            if (product.StockQuantity < cartItem.Quantity)
+            {
+                return RedirectToAction("ProductDetails", "Shop", new { id = product.Id });
+            }
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
 
             CartItem item = cart.FirstOrDefault(c => c.ProductId == cartItem.ProductId);
@@ -74,8 +79,8 @@ namespace OnlineFashionStore.Controllers
             HttpContext.Session.SetJson("Cart", cart);
 
             TempData["Success"] = "The product has been added!";
-            return Json(new { success = true });
-            //return RedirectToAction("ShopCart");
+            //return Json(new { success = true });
+            return RedirectToAction("ProductDetails", "Shop", new { id = product.Id });
         }
         public async Task<IActionResult> Decrease(int id)
         {
@@ -123,15 +128,13 @@ namespace OnlineFashionStore.Controllers
             }
 
             TempData["Success"] = "The product has been removed!";
-
-            return RedirectToAction("ShopCart");
+            return Json(new { success = true });
         }
 
         public IActionResult Clear()
         {
             HttpContext.Session.Remove("Cart");
-
-            return RedirectToAction("ShopCart");
+            return Json(new { success = true });
         }
     }
 }

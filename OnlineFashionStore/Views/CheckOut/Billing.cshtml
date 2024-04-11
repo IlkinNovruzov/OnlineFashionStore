@@ -3,7 +3,6 @@
     <div class="mb-4 pb-4"></div>
     <section class="shop-checkout container">
         <h2 class="page-title">Shipping and Checkout</h2>
-        @await Html.PartialAsync("_PartialCheckOutSteps")
         <form name="checkout-form" asp-controller="CheckOut" asp-action="CheckOut">
             <div class="checkout-form">
                 <div class="billing-info__wrapper">

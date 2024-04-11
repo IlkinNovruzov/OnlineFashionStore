@@ -98,7 +98,7 @@
                             <div class="qty-control__reduce">-</div>
                             <div class="qty-control__increase">+</div>
                         </div><!-- .qty-control -->
-                        <button type="submit" class="btn btn-primary" data-aside="cartDrawer" >Add to Cart</button>
+                        <button type="submit" class="btn btn-primary add" data-aside="cartDrawer">Add to Cart</button>
                     </div>
                 </form>
                 <div class="product-single__addtolinks">
@@ -522,30 +522,23 @@
 </main>
 @section Scripts{
     <script>
-        // Tüm renk radio butonlarını seç
         const colorRadios = document.querySelectorAll('.color-radio');
 
-        // Her radio butonu için tıklama olayını dinle
         colorRadios.forEach(radio => {
             radio.addEventListener('click', function () {
-                // Seçilen rengin id'sini al
                 const selectedColorId = this.value;
 
-                // Tüm renk label'larını seç
                 const colorLabels = document.querySelectorAll('.swatch-color');
 
-                // Her renk label'ını dön
                 colorLabels.forEach(label => {
-                    // Seçilen rengin id'sine sahip olan label'ı bul
                     if (label.getAttribute('aria-label') === selectedColorId) {
-                        // Seçilen rengin label'ına seçili sınıfını ekle
                         label.classList.add('selected-color');
                     } else {
-                        // Diğer renk label'larından seçili sınıfını kaldır
                         label.classList.remove('selected-color');
                     }
                 });
             });
         });
+
     </script>
 }
