@@ -1,0 +1,36 @@
+﻿@using X.PagedList
+@model IPagedList<Product>
+@foreach (var item in Model)
+{
+    <div class="product-card-wrapper">
+        <div class="product-card mb-3 mb-md-4 mb-xxl-5">
+            <div class="pc__img-wrapper">
+                <div class="swiper-container background-img js-swiper-slider" data-settings='{"resizeObserver": true}'>
+                    <div class="swiper-wrapper">
+                        @foreach (var img in item.Images)
+                        {
+                            <div class="swiper-slide">
+                                <a asp-controller="Shop" asp-action="ProductDetails" asp-route-id="@item.Id"><img loading="lazy" src="~/images/products/@img.ImageUrl" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img"></a>
+                            </div>
+                        }
+                    </div>
+                    <span class="pc__img-prev"><svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_sm" /></svg></span>
+                    <span class="pc__img-next"><svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_sm" /></svg></span>
+                </div>
+                <a asp-controller="Shop" asp-action="ProductDetails" asp-route-id="@item.Id" class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium" title="Details" data-product-id="@item.Id">Details</a>
+            </div>
+
+            <div class="pc__info position-relative">
+                <p class="pc__category">@item.Category.Name</p>
+                <h6 class="pc__title"><a href="product1_simple.html">@item.Name</a></h6>
+                <div class="product-card__price d-flex">
+                    <span class="money price">$@item.Price</span>
+                </div>
+
+                <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
+                </button>
+            </div>
+        </div>
+    </div>
+}

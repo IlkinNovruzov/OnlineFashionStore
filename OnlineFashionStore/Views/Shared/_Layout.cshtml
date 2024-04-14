@@ -493,50 +493,6 @@
    
             @await Component.InvokeAsync("CartVC")
 
-            @*  <div class="cart-drawer-item d-flex position-relative">
-            <div class="position-relative">
-            <img loading="lazy" class="cart-drawer-item__img" src="~/site/images/cart-item-2.jpg" />
-            </div>
-            <div class="cart-drawer-item__info flex-grow-1">
-            <h6 class="cart-drawer-item__title fw-normal">Kirby T-Shirt</h6>
-            <p class="cart-drawer-item__option text-secondary">Color: Black</p>
-            <p class="cart-drawer-item__option text-secondary">Size: XS</p>
-            <div class="d-flex align-items-center justify-content-between mt-1">
-            <div class="qty-control position-relative">
-            <input type="number" name="quantity" value="4" min="1" class="qty-control__number border-0 text-center">
-            <div class="qty-control__reduce text-start">-</div>
-            <div class="qty-control__increase text-end">+</div>
-            </div><!-- .qty-control -->
-            <span class="cart-drawer-item__price money price">$89</span>
-            </div>
-            </div>
-
-            <button class="btn-close-xs position-absolute top-0 end-0 js-cart-item-remove"></button>
-            </div><!-- /.cart-drawer-item d-flex -->
-
-            <hr class="cart-drawer-divider" />
-
-            <div class="cart-drawer-item d-flex position-relative">
-            <div class="position-relative">
-            <img loading="lazy" class="cart-drawer-item__img" src="~/site/images/cart-item-3.jpg" />
-            </div>
-            <div class="cart-drawer-item__info flex-grow-1">
-            <h6 class="cart-drawer-item__title fw-normal">Cableknit Shawl</h6>
-            <p class="cart-drawer-item__option text-secondary">Color: Green</p>
-            <p class="cart-drawer-item__option text-secondary">Size: L</p>
-            <div class="d-flex align-items-center justify-content-between mt-1">
-            <div class="qty-control position-relative">
-            <input type="number" name="quantity" value="3" min="1" class="qty-control__number border-0 text-center">
-            <div class="qty-control__reduce text-start">-</div>
-            <div class="qty-control__increase text-end">+</div>
-            </div><!-- .qty-control -->
-            <span class="cart-drawer-item__price money price">$129</span>
-            </div>
-            </div>
-
-            <button class="btn-close-xs position-absolute top-0 end-0 js-cart-item-remove"></button>
-            </div><!-- /.cart-drawer-item d-flex --> *@
-
         <!----------------- Sitemap ----------------->
     <div class="modal fade" id="siteMap" tabindex="-1" aria-labelledby="siteMapModal" aria-hidden="true">
         <div class="modal-dialog modal-fullscreen">
@@ -938,12 +894,11 @@
                 type: 'POST',
                 success: function (response) {
                     if (response.success) {
-                        alert('Ürün sepete başarıyla eklendi!');
                         $('#mainContent').load('/Cart/ShopCart #cartContent');
-                        $('#cart-drawer').load('/Cart/ShopCart .cart-drawer-items-list');
-                        
+                        $('#cartDrawer').load('/Cart/ShopCart #cart-drawer');
+                    $('.cartLogo').load('/Cart/ShopCart #cartlogo');
                     } else {
-                        alert('Ürün sepete eklenirken bir hata oluştu.');
+                        alert('Fail.');
                     }
                 },
                 error: function () {
@@ -958,7 +913,9 @@
                 type: 'POST',
                 success: function (response) {
                     $('#mainContent').load('/Cart/ShopCart #cartContent');
-                    alert('Ürün miktarı azaltıldı.');
+                    $('#cartDrawer').load('/Cart/ShopCart #cart-drawer');
+                    $('.cartLogo').load('/Cart/ShopCart #cartlogo');
+
                 },
                 error: function () {
                     alert('Failed.');
@@ -972,6 +929,8 @@
                 type: 'POST',
                 success: function (response) {
                     $('#mainContent').load('/Cart/ShopCart #cartContent');
+                    $('#cartDrawer').load('/Cart/ShopCart #cart-drawer');
+                    $('.cartLogo').load('/Cart/ShopCart #cartlogo');
                 },
                 error: function () {
                     alert('Failed.');
@@ -985,18 +944,19 @@
                 type: 'POST',
                 success: function (response) {
                     $('#mainContent').load('/Cart/ShopCart #cartContent');
-                    alert('Sepet temizlendi.');
+                    $('.cartLogo').load('/Cart/ShopCart #cartlogo');
+                    $('#cartDrawer').load('/Cart/ShopCart #cart-drawer');
                 },
                 error: function () {
                     alert('Failed.');
                 }
             });
         }
-        $(document).on('click', '.add-cart', function () {
-            var productId = $(this).data('product-id');
-            alert(productId);
-            addToCart(productId);
-        });
+        // $(document).on('click', '.add-cart', function () {
+        //     var productId = $(this).data('product-id');
+        //     alert(productId);
+        //     addToCart(productId);
+        // });
  
         $(document).on('click', '.minus', function () {
             var productId = $(this).data('product-id');
@@ -1004,12 +964,10 @@
         });
         $(document).on('click', '.plus', function () {
             var productId = $(this).data('product-id');
-            alert(productId);
             increase(productId);
         });
         $(document).on('click', '.x-remove', function () {
             var productId = $(this).data('product-id');
-            alert(productId);
             removeFromCart(productId);
         });
         $(document).on('click', '.clearCart', function () {

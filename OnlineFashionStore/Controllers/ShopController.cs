@@ -5,6 +5,8 @@ using OnlineFashionStore.Models.ViewModels;
 using OnlineFashionStore.Models.DataModels;
 using Microsoft.AspNetCore.Identity;
 using OnlineFashionStore.Extensions;
+using X.PagedList;
+using System.Drawing.Printing;
 namespace OnlineFashionStore.Controllers
 {
     public class ShopController : Controller
@@ -16,18 +18,51 @@ namespace OnlineFashionStore.Controllers
             _context = context;
             _userManager = userManager;
         }
-        public async Task<IActionResult> GetProducts()
+        [HttpGet]
+        public async Task<IActionResult> GetProducts(int? page)
         {
+            var pageNumber = page ?? 1;
+            var pageSize = 1;
             var model = new ShopViewModel()
             {
-                Products = await _context.Products.Include(p => p.Images).Include(x => x.Category).Where(x => x.IsActive == true).ToListAsync(),
+                Products = await _context.Products.Include(p => p.Images).Include(x => x.Category).Where(x => x.IsActive == true).ToPagedListAsync(pageNumber, pageSize),
                 Categories = _context.Categories.ToList(),
-                Brands = _context.Brands.ToList(),
                 Colors = _context.Colors.ToList(),
-                BrandProductCounts = _context.Products.GroupBy(p => p.Brand.Name).Select(g => new BrandProductCount { BrandName = g.Key, ProductCount = g.Count() }).ToList()
+                Sizes = _context.Sizes.ToList(),
+                MaxPrice = await _context.Products.MaxAsync(p => p.Price)
             };
             return View(model);
         }
+        [HttpPost]
+        public async Task<IActionResult> GetProducts(int? page,int[] ctgIds, int[] colorIds, int[] sizeIds, int min, int max)
+        {
+            var pageNumber = page ?? 1;
+            var pageSize = 1;
+            var query = _context.Products.Include(p => p.Category).Include(p => p.Images)
+                .Include(p => p.ProductColors).ThenInclude(pc => pc.Color)
+                .Include(p => p.ProductSizes).ThenInclude(ps => ps.Size)
+                .Where(p => p.IsActive == true);
+
+            if (ctgIds.Length > 0)
+            {
+                query = query.Where(p => ctgIds.Contains(p.CategoryId));
+            }
+            if (colorIds.Length > 0)
+            {
+                query = query.Where(p => p.ProductColors.Any(pc => colorIds.Contains(pc.ColorId)));
+            }
+            if (sizeIds.Length > 0)
+            {
+                query = query.Where(p => p.ProductSizes.Any(ps => sizeIds.Contains(ps.SizeId)));
+            }
+            if (max != 0)
+            {
+                query = query.Where(p => (p.Price <= max && p.Price >= min));
+            }
+            var products = await query.ToPagedListAsync(pageNumber, pageSize);
+            return PartialView("_ProductList", products);
+        }
+
         public async Task<IActionResult> ProductDetails(int id)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -41,7 +76,7 @@ namespace OnlineFashionStore.Controllers
             return View(model);
         }
 
-     
+
         [HttpPost]
         public IActionResult AddReview(Review review)
         {
@@ -49,12 +84,11 @@ namespace OnlineFashionStore.Controllers
             review.Date = DateTime.Now;
             _context.Reviews.Add(review);
             _context.SaveChanges();
-            return RedirectToAction("ProductDetails",new { id=id});
+            return RedirectToAction("ProductDetails", new { id = id });
         }
-       
-        
-        
-       
+
+
+
 
     }
 

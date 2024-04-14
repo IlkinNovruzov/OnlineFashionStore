@@ -21,7 +21,7 @@ namespace OnlineFashionStore
                 options.IdleTimeout = TimeSpan.FromMinutes(40);
                 options.Cookie.IsEssential = true;
             });
-            builder.Services.AddIdentity<AppUser,AppRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+            builder.Services.AddIdentity<AppUser, AppRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
             builder.Services.Configure<IdentityOptions>(options =>
             {
                 options.Password.RequiredLength = 4;
@@ -42,14 +42,14 @@ namespace OnlineFashionStore
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles(); 
+            app.UseStaticFiles();
 
             app.UseRouting();
 
             StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
             app.UseAuthorization();
-           
+
 
             app.MapControllerRoute(
                 name: "Admin",

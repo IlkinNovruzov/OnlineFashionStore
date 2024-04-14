@@ -44,6 +44,7 @@
     </PackageReference>
     <PackageReference Include="MimeKit" Version="4.4.0" />
     <PackageReference Include="Stripe.net" Version="43.20.0" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="9.1.2" />
   </ItemGroup>
 
   <ItemGroup>

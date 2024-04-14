@@ -27,7 +27,7 @@ namespace OnlineFashionStore.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> Login(AppUserLogin appUserLogin)
+        public async Task<IActionResult> Login(AppUserLogin appUserLogin,string returnUrl)
         {
             var user = await _userManager.FindByNameAsync(appUserLogin.Username);
             if (user != null && !await _userManager.IsEmailConfirmedAsync(user))
@@ -41,9 +41,13 @@ namespace OnlineFashionStore.Controllers
             var result = await _signInManager.PasswordSignInAsync(appUserLogin.Username, appUserLogin.Password, false, true);
             if (result.Succeeded)
             {
+                if (!string.IsNullOrEmpty(returnUrl))
+                {
+                    return Redirect(returnUrl);
+                }
                 return RedirectToAction("Index", "Home");
             }
-            return View();
+            return View(appUserLogin);
         }
         [HttpGet]
         public IActionResult SignUp()

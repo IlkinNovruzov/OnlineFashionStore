@@ -1,5 +1,5 @@
 ﻿@model ShopViewModel
-<main>
+<main id="shop">
     <section class="shop-main container d-flex pt-4 pt-xl-5">
         <div class="shop-sidebar side-sticky bg-body" id="shopFilter">
             <div class="aside-header d-flex d-lg-none align-items-center">
@@ -27,7 +27,7 @@
                                 @foreach (var item in Model.Categories)
                                 {
                                     <li class="list-item">
-                                        <a href="#" class="menu-link py-1">@item.Name</a>
+                                        <div class="menu-link py-1 ctg" data-id="@item.Id">@item.Name</div>
                                     </li>
                                 }
                             </ul>
@@ -54,7 +54,7 @@
                             <div class="d-flex flex-wrap">
                                 @foreach (var item in Model.Colors)
                                 {
-                                    <a href="#" class="swatch-color js-filter" style="color:@item.Code"></a>
+                                    <div class="swatch-color js-filter colors" style="color:@item.Code" data-color-id="@item.Id"> </div>
                                 }
 
                             </div>
@@ -79,12 +79,10 @@
                     <div id="accordion-filter-size" class="accordion-collapse collapse show border-0" aria-labelledby="accordion-heading-size" data-bs-parent="#size-filters">
                         <div class="accordion-body px-0 pb-0">
                             <div class="d-flex flex-wrap">
-                                <a href="#" class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">XS</a>
-                                <a href="#" class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">S</a>
-                                <a href="#" class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">M</a>
-                                <a href="#" class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">L</a>
-                                <a href="#" class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">XL</a>
-                                <a href="#" class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter">XXL</a>
+                                @foreach (var item in Model.Sizes)
+                                {
+                                    <div class="swatch-size btn btn-sm btn-outline-light mb-3 me-3 js-filter" data-size-id="@item.Id">@item.Name</div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -92,42 +90,6 @@
             </div><!-- /.accordion -->
 
 
-            <div class="accordion" id="brand-filters">
-                <div class="accordion-item mb-4 pb-3">
-                    <h5 class="accordion-header" id="accordion-heading-brand">
-                        <button class="accordion-button p-0 border-0 fs-5 text-uppercase" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-filter-brand" aria-expanded="true" aria-controls="accordion-filter-brand">
-                            Brands
-                            <svg class="accordion-button__icon type2" viewBox="0 0 10 6" xmlns="http://www.w3.org/2000/svg">
-                                <g aria-hidden="true" stroke="none" fill-rule="evenodd">
-                                    <path d="M5.35668 0.159286C5.16235 -0.053094 4.83769 -0.0530941 4.64287 0.159286L0.147611 5.05963C-0.0492049 5.27473 -0.049205 5.62357 0.147611 5.83813C0.344427 6.05323 0.664108 6.05323 0.860924 5.83813L5 1.32706L9.13858 5.83867C9.33589 6.05378 9.65507 6.05378 9.85239 5.83867C10.0492 5.62357 10.0492 5.27473 9.85239 5.06018L5.35668 0.159286Z" />
-                                </g>
-                            </svg>
-                        </button>
-                    </h5>
-                    <div id="accordion-filter-brand" class="accordion-collapse collapse show border-0" aria-labelledby="accordion-heading-brand" data-bs-parent="#brand-filters">
-                        <div class="search-field multi-select accordion-body px-0 pb-0">
-                            <select class="d-none" multiple name="total-numbers-list">
-                                @foreach (var item in Model.Brands)
-                                {
-                                    <option value="@item.Id">@item.Name</option>
-                                }
-                            </select>
-                            <div class="search-field__input-wrapper mb-3">
-                                <input type="text" class="search-field__input form-control form-control-sm border-light border-2" placeholder="Search" />
-                            </div>
-                            <ul class="multi-select__list list-unstyled">
-                                @foreach (var item in Model.BrandProductCounts)
-                                {
-                                    <li class="search-suggestion__item multi-select__item text-primary js-search-select js-multi-select">
-                                        <span class="me-auto">@item.BrandName</span>
-                                        <span class="text-secondary">@item.ProductCount</span>
-                                    </li>
-                                }
-                            </ul>
-                        </div>
-                    </div>
-                </div><!-- /.accordion-item -->
-            </div><!-- /.accordion -->
 
 
             <div class="accordion" id="price-filters">
@@ -143,15 +105,15 @@
                         </button>
                     </h5>
                     <div id="accordion-filter-price" class="accordion-collapse collapse show border-0" aria-labelledby="accordion-heading-price" data-bs-parent="#price-filters">
-                        <input class="price-range-slider" type="text" value="" data-slider-min="10" data-slider-max="1000" data-slider-step="5" data-slider-value="[250,450]" data-currency="$" />
+                        <input class="price-range-slider" type="text" value="" data-slider-min="0" data-slider-max="@Model.MaxPrice" data-slider-step="5" data-slider-value="[0,@Model.MaxPrice]" data-currency="$" />
                         <div class="price-range__info d-flex align-items-center mt-2">
                             <div class="me-auto">
                                 <span class="text-secondary">Min Price: </span>
-                                <span class="price-range__min">$250</span>
+                                <span class="price-range__min">$0</span>
                             </div>
                             <div>
                                 <span class="text-secondary">Max Price: </span>
-                                <span class="price-range__max">$450</span>
+                                <span class="price-range__max">$@Model.MaxPrice</span>
                             </div>
                         </div>
                     </div>
@@ -198,64 +160,72 @@
             </div><!-- /.d-flex justify-content-between -->
 
             <div class="products-grid row row-cols-2 row-cols-md-3" id="products-grid">
-                @for (int i = 0; i < 10; i++)
+                @foreach (var item in Model.Products)
                 {
-                    @foreach (var item in Model.Products)
-                    {
-                        <div class="product-card-wrapper">
-                            <div class="product-card mb-3 mb-md-4 mb-xxl-5">
-                                <div class="pc__img-wrapper">
-                                    <div class="swiper-container background-img js-swiper-slider" data-settings='{"resizeObserver": true}'>
-                                        <div class="swiper-wrapper">
-                                            @foreach (var img in item.Images)
-                                            {
-                                                <div class="swiper-slide">
-                                                    <a asp-controller="Shop" asp-action="ProductDetails" asp-route-id="@item.Id"><img loading="lazy" src="~/images/products/@img.ImageUrl" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img"></a>
-                                                </div>
-                                            }
-                                        </div>
-                                        <span class="pc__img-prev"><svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_sm" /></svg></span>
-                                        <span class="pc__img-next"><svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_sm" /></svg></span>
+                    <div class="product-card-wrapper">
+                        <div class="product-card mb-3 mb-md-4 mb-xxl-5">
+                            <div class="pc__img-wrapper">
+                                <div class="swiper-container background-img js-swiper-slider" data-settings='{"resizeObserver": true}'>
+                                    <div class="swiper-wrapper">
+                                        @foreach (var img in item.Images)
+                                        {
+                                            <div class="swiper-slide">
+                                                <a asp-controller="Shop" asp-action="ProductDetails" asp-route-id="@item.Id"><img loading="lazy" src="~/images/products/@img.ImageUrl" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img"></a>
+                                            </div>
+                                        }
                                     </div>
-                                    <a asp-controller="Shop" asp-action="ProductDetails" asp-route-id="@item.Id" class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium"  title="Details" data-product-id="@item.Id">Details</a>
+                                    <span class="pc__img-prev"><svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_sm" /></svg></span>
+                                    <span class="pc__img-next"><svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_sm" /></svg></span>
+                                </div>
+                                <a asp-controller="Shop" asp-action="ProductDetails" asp-route-id="@item.Id" class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium" title="Details" data-product-id="@item.Id">Details</a>
+                            </div>
+
+                            <div class="pc__info position-relative">
+                                <p class="pc__category">@item.Category.Name</p>
+                                <h6 class="pc__title"><a href="product1_simple.html">@item.Name</a></h6>
+                                <div class="product-card__price d-flex">
+                                    <span class="money price">$@item.Price</span>
                                 </div>
 
-                                <div class="pc__info position-relative">
-                                    <p class="pc__category">@item.Category.Name</p>
-                                    <h6 class="pc__title"><a href="product1_simple.html">@item.Name</a></h6>
-                                    <div class="product-card__price d-flex">
-                                        <span class="money price">$@item.Price</span>
-                                    </div>
-
-                                    <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
-                                        <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
-                                    </button>
-                                </div>
+                                <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
+                                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
+                                </button>
                             </div>
                         </div>
-                    }
+                    </div>
                 }
 
 
             </div><!-- /.products-grid row -->
-
             <nav class="shop-pages d-flex justify-content-between mt-3" aria-label="Page navigation">
-                <button id="cris">Ayax</button>
-                <a href="#" class="btn-link d-inline-flex align-items-center">
-                    <svg class="me-1" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_sm" /></svg>
-                    <span class="fw-medium">PREV</span>
-                </a>
-                <ul class="pagination mb-0">
-                    <li class="page-item"><a class="btn-link px-1 mx-2 btn-link_active" href="#">1</a></li>
-                    <li class="page-item"><a class="btn-link px-1 mx-2" href="#">2</a></li>
-                    <li class="page-item"><a class="btn-link px-1 mx-2" href="#">3</a></li>
-                    <li class="page-item"><a class="btn-link px-1 mx-2" href="#">4</a></li>
+                <div>
+                    @if (Model.HasPreviousPage)
+                    {
+                        <a href="?page=@(Model.Products.PageNumber - 1)" class="btn-link d-inline-flex align-items-center">
+                            <svg class="me-1" width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_sm" /></svg>
+                            <span class="fw-medium">PREV</span>
+                        </a>
+                    }
+                </div>
+                <ul class="pagination mb-0 justify-content-center">
+                    @for (var i = 1; i <= Model.Products.PageCount; i++)
+                    {
+                        <li class="page-item">
+                            <a class="btn-link px-1 mx-2 @(i ==Model.Products.PageNumber ? "btn-link_active" : "")" href="@Url.Action("GetProducts", "Shop", new { page = i })">@i</a>
+                        </li>
+                    }
                 </ul>
-                <a href="#" class="btn-link d-inline-flex align-items-center">
-                    <span class="fw-medium me-1">NEXT</span>
-                    <svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_sm" /></svg>
-                </a>
+                <div>
+                    @if (Model.HasNextPage)
+                    {
+                        <a href="?page=@(Model.Products.PageNumber + 1)" class="btn-link d-inline-flex align-items-center">
+                            <span class="fw-medium me-1">NEXT</span>
+                            <svg width="7" height="11" viewBox="0 0 7 11" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_sm" /></svg>
+                        </a>
+                    }
+                </div>
             </nav>
+
         </div>
     </section><!-- /.shop-main container -->
 </main>
@@ -266,53 +236,90 @@
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="~/js/Session.js"></script>
-   @*  <script>
-        //  data: { name='Wishon' },
+    <script>
         $(document).ready(function () {
-            $('.test').each(function () {
-                $(this).click(function () {
-                    $.ajax({
-                        url: '/Shop/AddBrand',
-                        type: 'POST',
-                        success: function (response) {
-                            alert('başarıyla tamamlandı:', response);
-                        },
-                        error: function () {
-                            alert('İşlem sırasında bir hata oluştu:');
-                        }
+            var CategoryIds = [];
+            var ColorIds = [];
+            var SizeIds = [];
+            var min = 0;
+            var max = 0;
+
+            $('.ctg').on('click', function () {
+                var categoryId = $(this).data('id');
+
+                if ($(this).hasClass('selected')) {
+                    $(this).css('color', '');
+                    $(this).removeClass('selected');
+                    CategoryIds = CategoryIds.filter(function (id) {
+                        return id !== categoryId;
                     });
-
-
-                });
+                } else {
+                    $(this).css('color', 'red');
+                    $(this).addClass('selected');
+                    CategoryIds.push(categoryId);
+                }
+                Filter(CategoryIds, ColorIds, SizeIds, min, max);
             });
+
+
+            $('.swatch-color').on('click', function () {
+                var colorId = $(this).data('color-id');
+
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                    ColorIds = ColorIds.filter(function (id) {
+                        return id !== colorId;
+                    });
+                } else {
+                    $(this).addClass('selected');
+                    ColorIds.push(colorId);
+                }
+                Filter(CategoryIds, ColorIds, SizeIds, min, max);
+            });
+
+            $('.swatch-size').on('click', function () {
+                var sizeId = $(this).data('size-id');
+
+                if ($(this).hasClass('selected')) {
+                    $(this).removeClass('selected');
+                    SizeIds = SizeIds.filter(function (id) {
+                        return id !== sizeId;
+                    });
+                } else {
+                    $(this).addClass('selected');
+                    SizeIds.push(sizeId);
+                }
+                Filter(CategoryIds, ColorIds, SizeIds, min, max);
+            });
+            $('.slider').on('click', function () {
+                min = parseInt($('.price-range__min').text().replace('$', ''), 10);
+                max = parseInt($('.price-range__max').text().replace('$', ''), 10);
+                Filter(CategoryIds, ColorIds, SizeIds, min, max);
+            })
         });
 
-       
-        function addToCart(productId) {
+        function Filter(CategoryIds, ColorIds, SizeIds, Min, Max) {
             $.ajax({
-                url: '/Cart/Add',
-                type: 'POST',
-                data: { productId: productId },
-                success: function (response) {
-                    
-                    updateCart();
+                url: "/Shop/GetProducts",
+                type: 'post',
+                dataType: 'html',
+                data: {
+                    ctgIds: CategoryIds,
+                    colorIds: ColorIds,
+                    sizeIds: SizeIds,
+                    min: Min,
+                    max: Max
                 },
-                error: function () {
-                    alert('Ürün sepete eklenirken bir hata oluştu.');
+                success: function (response) {
+                    $('#products-grid').html(response);
+                },
+                error: function (error) {
+                    console.error("fail " + error);
                 }
             });
         }
-        function updateCart() {
-            $.ajax({
-                url: '/Cart/GetCart',
-                type: 'GET',
-                success: function (response) {
-                    $('#cartDrawer').html(response);
-                },
-                error: function () {
-                    alert('Sepet içeriği alınırken bir hata oluştu.');
-                }
-            });
-        }
-    </script> *@
+
+
+    </script>
+
 }

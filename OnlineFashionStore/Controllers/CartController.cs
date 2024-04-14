@@ -27,30 +27,6 @@ namespace OnlineFashionStore.Controllers
             return View(cartVM);
         }
         [HttpPost]
-        public async Task<IActionResult> Increase(int id)
-        {
-            var product = await _context.Products.FindAsync(id);
-
-            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
-
-            CartItem cartItem = cart.Where(c => c.ProductId == id).FirstOrDefault();
-
-            if (cartItem == null)
-            {
-                cart.Add(new CartItem(product));
-            }
-            else
-            {
-                cartItem.Quantity += 1;
-            }
-
-            HttpContext.Session.SetJson("Cart", cart);
-
-            TempData["Success"] = "The product has been added!";
-            return Json(new { success = true });
-            //return RedirectToAction("ShopCart");
-        }
-        [HttpPost]
         public async Task<IActionResult> Add(CartItem cartItem)
         {
             var product = await _context.Products.Include(p => p.Images).FirstOrDefaultAsync(p => p.Id == cartItem.ProductId);
@@ -82,7 +58,31 @@ namespace OnlineFashionStore.Controllers
             //return Json(new { success = true });
             return RedirectToAction("ProductDetails", "Shop", new { id = product.Id });
         }
-        public async Task<IActionResult> Decrease(int id)
+        [HttpPost]
+        public async Task<IActionResult> Increase(int id)
+        {
+            var product = await _context.Products.FindAsync(id);
+
+            List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart") ?? new List<CartItem>();
+
+            CartItem cartItem = cart.Where(c => c.ProductId == id).FirstOrDefault();
+
+            if (cartItem == null)
+            {
+                cart.Add(new CartItem(product));
+            }
+            else
+            {
+                cartItem.Quantity += 1;
+            }
+
+            HttpContext.Session.SetJson("Cart", cart);
+
+            TempData["Success"] = "The product has been added!";
+            return Json(new { success = true });
+            //return RedirectToAction("ShopCart");
+        }
+        public IActionResult Decrease(int id)
         {
             List<CartItem> cart = HttpContext.Session.GetJson<List<CartItem>>("Cart");
 
