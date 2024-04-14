@@ -46,8 +46,14 @@
                     </div><!-- /.breadcrumb -->
 
                     <div class="product-single__prev-next d-flex align-items-center justify-content-between justify-content-md-end flex-grow-1">
-                        <a href="#" class="text-uppercase fw-medium"><svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_md" /></svg><span class="menu-link menu-link_us-s">Prev</span></a>
-                        <a href="#" class="text-uppercase fw-medium"><span class="menu-link menu-link_us-s">Next</span><svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_md" /></svg></a>
+                        @if (Model.PreviousProductId!=null)
+                        {
+                        <a asp-controller="Shop" asp-action="ProductDetails" asp-route-id="@Model.PreviousProductId" class="text-uppercase fw-medium"><svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg"><use href="#icon_prev_md" /></svg><span class="menu-link menu-link_us-s">Prev</span></a>
+                        }
+                        @if (Model.NextProductId!=null)
+                        {
+                        <a asp-controller="Shop" asp-action="ProductDetails" asp-route-id="@Model.NextProductId" class="text-uppercase fw-medium"><span class="menu-link menu-link_us-s">Next</span><svg width="25" height="25" viewBox="0 0 25 25" xmlns="http://www.w3.org/2000/svg"><use href="#icon_next_md" /></svg></a>
+                        }
                     </div><!-- /.shop-acs -->
                 </div>
                 <h1 class="product-single__name">@Model.Product.Name</h1>

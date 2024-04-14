@@ -11,8 +11,6 @@ namespace OnlineFashionStore.Models.ViewModels
         public List<Color> Colors { get; set; }
         public List<Size> Sizes { get; set; }
         public decimal MaxPrice { get; set; }
-        public int PageIndex { get; set; }
-        public int TotalPages { get; set; }
         public bool HasPreviousPage => !Products.IsFirstPage;
         public bool HasNextPage => !Products.IsLastPage;
     }

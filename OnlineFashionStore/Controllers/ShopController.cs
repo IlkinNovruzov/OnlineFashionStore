@@ -25,7 +25,7 @@ namespace OnlineFashionStore.Controllers
             var pageSize = 1;
             var model = new ShopViewModel()
             {
-                Products = await _context.Products.Include(p => p.Images).Include(x => x.Category).Where(x => x.IsActive == true).ToPagedListAsync(pageNumber, pageSize),
+                Products = await _context.Products.Include(p => p.Images).Include(x => x.Category).Where(p => p.IsActive).ToPagedListAsync(pageNumber, pageSize),
                 Categories = _context.Categories.ToList(),
                 Colors = _context.Colors.ToList(),
                 Sizes = _context.Sizes.ToList(),
@@ -66,11 +66,16 @@ namespace OnlineFashionStore.Controllers
         public async Task<IActionResult> ProductDetails(int id)
         {
             var user = await _userManager.GetUserAsync(User);
+            var nextProductId = _context.Products.Where(p => p.Id > id && p.IsActive).Min(p => (int?)p.Id);
+            var previousProductId = _context.Products.Where(p => p.Id < id && p.IsActive).Max(p => (int?)p.Id);
+
             var model = new ProductDetailsVM()
             {
                 Product = await _context.Products.Include(p => p.Images).Include(a => a.Attributes).Include(p => p.ProductColors).ThenInclude(pc => pc.Color).Include(p => p.ProductSizes).ThenInclude(ps => ps.Size).FirstOrDefaultAsync(p => p.Id == id),
-                Reviews = _context.Reviews.Where(r => r.ProductId == id).Include(r => r.User).ToList(),
-                Review = (user != null && User.Identity.IsAuthenticated) ? new Review { ProductId = id, UserId = user.Id } : null
+                Reviews = await _context.Reviews.Where(r => r.ProductId == id).Include(r => r.User).ToListAsync(),
+                Review = (user != null && User.Identity.IsAuthenticated) ? new Review { ProductId = id, UserId = user.Id } : null,
+                NextProductId=nextProductId,
+                PreviousProductId=previousProductId
             };
 
             return View(model);
