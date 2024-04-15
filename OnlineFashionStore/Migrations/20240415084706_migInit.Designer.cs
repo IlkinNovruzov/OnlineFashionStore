@@ -12,8 +12,8 @@ using OnlineFashionStore.Models;
 namespace OnlineFashionStore.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240410160600_migOrder")]
-    partial class migOrder
+    [Migration("20240415084706_migInit")]
+    partial class migInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -259,16 +259,16 @@ namespace OnlineFashionStore.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6b7c81af-1d79-4b53-b394-1b7b228dfc4c",
+                            ConcurrencyStamp = "86f7d08a-3e55-4d8d-a473-d157f6ee3561",
                             Email = "inovruzov2004@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             Name = "Ilkin",
                             NormalizedEmail = "INOVRUZOV2004@GMAIL.COM",
                             NormalizedUserName = "ILKIN.ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEKuC12cdbfuasW/sSXTDYq1T3hEce3BIrdxYEmytQ3WQ0bMRKVpG2uYjNN5jmvcdDQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAJ5W5pK8bD+VwrkqJhcY+jUzdCTUue9GkwY9QhV0QSLveogn2A8HMb9aRqCqbDpcw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "fb3d699e-7a42-48be-9e3e-ee34c0faa048",
+                            SecurityStamp = "55d45e86-9764-467e-9b56-e8c2912401d2",
                             Surname = "Novruzov",
                             TwoFactorEnabled = false,
                             UserName = "ilkin.admin"
@@ -380,9 +380,6 @@ namespace OnlineFashionStore.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("AppUserId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Country")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -405,9 +402,6 @@ namespace OnlineFashionStore.Migrations
                     b.Property<int>("OrderNumber")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PaymentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -424,9 +418,7 @@ namespace OnlineFashionStore.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AppUserId");
-
-                    b.HasIndex("PaymentId");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Orders");
                 });
@@ -468,23 +460,6 @@ namespace OnlineFashionStore.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Payment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Payments");
-                });
-
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -498,6 +473,9 @@ namespace OnlineFashionStore.Migrations
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -586,6 +564,35 @@ namespace OnlineFashionStore.Migrations
                     b.HasIndex("SizeId");
 
                     b.ToTable("ProductSizes");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Promotion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DiscountPercentage")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UsageLimit")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Promotions");
                 });
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Review", b =>
@@ -761,17 +768,13 @@ namespace OnlineFashionStore.Migrations
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Order", b =>
                 {
-                    b.HasOne("OnlineFashionStore.Models.DataModels.AppUser", "AppUser")
+                    b.HasOne("OnlineFashionStore.Models.DataModels.AppUser", "User")
                         .WithMany("Orders")
-                        .HasForeignKey("AppUserId")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("OnlineFashionStore.Models.DataModels.Payment", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("PaymentId");
-
-                    b.Navigation("AppUser");
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.OrderItem", b =>
@@ -870,7 +873,7 @@ namespace OnlineFashionStore.Migrations
                         .IsRequired();
 
                     b.HasOne("OnlineFashionStore.Models.DataModels.AppUser", "User")
-                        .WithMany("Review")
+                        .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -884,7 +887,7 @@ namespace OnlineFashionStore.Migrations
                 {
                     b.Navigation("Orders");
 
-                    b.Navigation("Review");
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Brand", b =>
@@ -905,11 +908,6 @@ namespace OnlineFashionStore.Migrations
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Order", b =>
                 {
                     b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Payment", b =>
-                {
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Product", b =>

@@ -4,9 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using OnlineFashionStore.Models.ViewModels;
 using OnlineFashionStore.Models.DataModels;
 using Microsoft.AspNetCore.Identity;
-using OnlineFashionStore.Extensions;
 using X.PagedList;
-using System.Drawing.Printing;
 namespace OnlineFashionStore.Controllers
 {
     public class ShopController : Controller
@@ -34,7 +32,7 @@ namespace OnlineFashionStore.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> GetProducts(int? page,int[] ctgIds, int[] colorIds, int[] sizeIds, int min, int max)
+        public async Task<IActionResult> GetProducts(int? page, int[] ctgIds, int[] colorIds, int[] sizeIds, int min, int max)
         {
             var pageNumber = page ?? 1;
             var pageSize = 1;
@@ -66,16 +64,18 @@ namespace OnlineFashionStore.Controllers
         public async Task<IActionResult> ProductDetails(int id)
         {
             var user = await _userManager.GetUserAsync(User);
-            var nextProductId = _context.Products.Where(p => p.Id > id && p.IsActive).Min(p => (int?)p.Id);
-            var previousProductId = _context.Products.Where(p => p.Id < id && p.IsActive).Max(p => (int?)p.Id);
-
+            var reviews = await _context.Reviews.Where(r => r.ProductId == id).Include(r => r.User).ToListAsync();
+            var reviewCount = reviews != null ? reviews.Count : 0;
+            var rating = reviews != null && reviews.Any() ? reviews.Average(r => r.Rating) : 0;
             var model = new ProductDetailsVM()
             {
                 Product = await _context.Products.Include(p => p.Images).Include(a => a.Attributes).Include(p => p.ProductColors).ThenInclude(pc => pc.Color).Include(p => p.ProductSizes).ThenInclude(ps => ps.Size).FirstOrDefaultAsync(p => p.Id == id),
-                Reviews = await _context.Reviews.Where(r => r.ProductId == id).Include(r => r.User).ToListAsync(),
+                Reviews = reviews,
                 Review = (user != null && User.Identity.IsAuthenticated) ? new Review { ProductId = id, UserId = user.Id } : null,
-                NextProductId=nextProductId,
-                PreviousProductId=previousProductId
+                NextProductId = _context.Products.Where(p => p.Id > id && p.IsActive).Min(p => (int?)p.Id),
+                PreviousProductId = _context.Products.Where(p => p.Id < id && p.IsActive).Max(p => (int?)p.Id),
+                ReviewCount = reviewCount,
+                Rating = rating
             };
 
             return View(model);

@@ -47,6 +47,7 @@ namespace OnlineFashionStore
             app.UseRouting();
 
             StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
+            app.UseStatusCodePagesWithReExecute("/Error/NotFound", "?statusCode={0}");
 
             app.UseAuthorization();
 

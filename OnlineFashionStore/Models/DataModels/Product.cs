@@ -26,6 +26,8 @@ namespace OnlineFashionStore.Models.DataModels
         [Column(TypeName = "decimal(10, 2)")]
         [Range(0.01, double.MaxValue, ErrorMessage = "Price invalid")]
         public decimal Price { get; set; }
+        [Required]
+        public DateTime CreatedAt { get; set; }
 
         [Required]
         public int StockQuantity { get; set; }

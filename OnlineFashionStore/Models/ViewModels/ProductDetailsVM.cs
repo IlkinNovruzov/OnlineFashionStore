@@ -10,5 +10,7 @@ namespace OnlineFashionStore.Models.ViewModels
         public CartItem CartItem { get; set; }
         public int? NextProductId { get; set; }
         public int? PreviousProductId { get; set; }
+        public int ReviewCount { get; set; }
+        public double Rating { get; set; }
     }
 }

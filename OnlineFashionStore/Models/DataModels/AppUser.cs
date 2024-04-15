@@ -7,6 +7,6 @@ namespace OnlineFashionStore.Models.DataModels
         public string Name { get; set; }
         public string Surname { get; set; }
         public List<Order> Orders { get; set; }
-        public List<Review> Review { get; set; }
+        public List<Review> Reviews { get; set; }
     }
 }

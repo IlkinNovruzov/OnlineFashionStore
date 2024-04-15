@@ -256,16 +256,16 @@ namespace OnlineFashionStore.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fb634a05-186f-4ed7-8f98-d155c15448ba",
+                            ConcurrencyStamp = "86f7d08a-3e55-4d8d-a473-d157f6ee3561",
                             Email = "inovruzov2004@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             Name = "Ilkin",
                             NormalizedEmail = "INOVRUZOV2004@GMAIL.COM",
                             NormalizedUserName = "ILKIN.ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEHP6YxDgrsuWOB3P+Mg10ZsbLeeBYZIDeW6c2XR2QX48wmzne0kJVR0JNprdb1mzKw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEAJ5W5pK8bD+VwrkqJhcY+jUzdCTUue9GkwY9QhV0QSLveogn2A8HMb9aRqCqbDpcw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "e96fcf59-8b05-421e-b517-ed5b07b3ad42",
+                            SecurityStamp = "55d45e86-9764-467e-9b56-e8c2912401d2",
                             Surname = "Novruzov",
                             TwoFactorEnabled = false,
                             UserName = "ilkin.admin"
@@ -399,9 +399,6 @@ namespace OnlineFashionStore.Migrations
                     b.Property<int>("OrderNumber")
                         .HasColumnType("int");
 
-                    b.Property<int?>("PaymentId")
-                        .HasColumnType("int");
-
                     b.Property<string>("PaymentMethod")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -417,8 +414,6 @@ namespace OnlineFashionStore.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PaymentId");
 
                     b.HasIndex("UserId");
 
@@ -462,23 +457,6 @@ namespace OnlineFashionStore.Migrations
                     b.ToTable("OrderItems");
                 });
 
-            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Payment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Payments");
-                });
-
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Product", b =>
                 {
                     b.Property<int>("Id")
@@ -492,6 +470,9 @@ namespace OnlineFashionStore.Migrations
 
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -580,6 +561,35 @@ namespace OnlineFashionStore.Migrations
                     b.HasIndex("SizeId");
 
                     b.ToTable("ProductSizes");
+                });
+
+            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Promotion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("DiscountPercentage")
+                        .HasColumnType("decimal(5,2)");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("StartDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UsageLimit")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Promotions");
                 });
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Review", b =>
@@ -755,10 +765,6 @@ namespace OnlineFashionStore.Migrations
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Order", b =>
                 {
-                    b.HasOne("OnlineFashionStore.Models.DataModels.Payment", null)
-                        .WithMany("Orders")
-                        .HasForeignKey("PaymentId");
-
                     b.HasOne("OnlineFashionStore.Models.DataModels.AppUser", "User")
                         .WithMany("Orders")
                         .HasForeignKey("UserId")
@@ -864,7 +870,7 @@ namespace OnlineFashionStore.Migrations
                         .IsRequired();
 
                     b.HasOne("OnlineFashionStore.Models.DataModels.AppUser", "User")
-                        .WithMany("Review")
+                        .WithMany("Reviews")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -878,7 +884,7 @@ namespace OnlineFashionStore.Migrations
                 {
                     b.Navigation("Orders");
 
-                    b.Navigation("Review");
+                    b.Navigation("Reviews");
                 });
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Brand", b =>
@@ -899,11 +905,6 @@ namespace OnlineFashionStore.Migrations
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Order", b =>
                 {
                     b.Navigation("OrderItems");
-                });
-
-            modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Payment", b =>
-                {
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("OnlineFashionStore.Models.DataModels.Product", b =>

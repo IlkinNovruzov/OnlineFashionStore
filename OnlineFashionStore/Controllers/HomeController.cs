@@ -20,7 +20,8 @@ namespace OnlineFashionStore.Controllers
 
         public IActionResult Index()
         {
-            return View(_context.Sliders.ToList());
+            var limitedProducts = _context.Products.Include(p => p.Images).Include(x => x.Category).Where(p => p.IsActive).Where(p => p.StockQuantity < 10 ).ToList();
+            return View(limitedProducts);
         }
         public async Task<IActionResult> Logout()
         {

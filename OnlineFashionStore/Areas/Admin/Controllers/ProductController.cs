@@ -32,6 +32,7 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(ProductViewModel model)
         {
+            model.Product.CreatedAt = DateTime.Now;
             await _context.Products.AddAsync(model.Product);
             await _context.SaveChangesAsync();
             foreach (var colorId in model.ColorIds)
