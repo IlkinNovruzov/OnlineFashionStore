@@ -32,29 +32,31 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Add(ProductViewModel model)
         {
-            model.Product.CreatedAt = DateTime.Now;
-            await _context.Products.AddAsync(model.Product);
-            await _context.SaveChangesAsync();
-            foreach (var colorId in model.ColorIds)
-            {
-                var productColor = new ProductColor
+
+                model.Product.CreatedAt = DateTime.Now;
+                await _context.Products.AddAsync(model.Product);
+                await _context.SaveChangesAsync();
+                foreach (var colorId in model.ColorIds)
                 {
-                    ProductId = model.Product.Id,
-                    ColorId = colorId
-                };
-                _context.ProductColors.Add(productColor);
-            }
-            foreach (var sizeId in model.SizeIds)
-            {
-                var productSize = new ProductSize
+                    var productColor = new ProductColor
+                    {
+                        ProductId = model.Product.Id,
+                        ColorId = colorId
+                    };
+                    _context.ProductColors.Add(productColor);
+                }
+                foreach (var sizeId in model.SizeIds)
                 {
-                    ProductId = model.Product.Id,
-                    SizeId=sizeId
-                };
-                _context.ProductSizes.Add(productSize);
-            }
-            _context.SaveChanges();
-            return RedirectToAction("Image", new { id = model.Product.Id });
+                    var productSize = new ProductSize
+                    {
+                        ProductId = model.Product.Id,
+                        SizeId = sizeId
+                    };
+                    _context.ProductSizes.Add(productSize);
+                }
+                _context.SaveChanges();
+                return RedirectToAction("Image", new { id = model.Product.Id });
+          
         }
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -80,41 +82,48 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ProductViewModel model)
         {
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == model.Product.Id);
-            product.Name=model.Product.Name; 
-            product.Description=model.Product.Description;
-            product.CategoryId=model.Product.CategoryId;
-            product.BrandId=model.Product.BrandId;
-            product.StockQuantity=model.Product.StockQuantity;
-            product.Price=model.Product.Price;
-            product.IsActive=model.Product.IsActive;
-
-            await _context.SaveChangesAsync();
-
-            var oldColors = _context.ProductColors.Where(pc => pc.ProductId == model.Product.Id).ToList();
-            var oldSizes = _context.ProductSizes.Where(ps => ps.ProductId == model.Product.Id).ToList();
-            _context.ProductColors.RemoveRange(oldColors);
-            _context.ProductSizes.RemoveRange(oldSizes);
-            foreach (var colorId in model.ColorIds)
+            if (ModelState.IsValid)
             {
-                var productColor = new ProductColor
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == model.Product.Id);
+                product.Name = model.Product.Name;
+                product.Description = model.Product.Description;
+                product.CategoryId = model.Product.CategoryId;
+                product.BrandId = model.Product.BrandId;
+                product.StockQuantity = model.Product.StockQuantity;
+                product.Price = model.Product.Price;
+                product.IsActive = model.Product.IsActive;
+
+                await _context.SaveChangesAsync();
+
+                var oldColors = _context.ProductColors.Where(pc => pc.ProductId == model.Product.Id).ToList();
+                var oldSizes = _context.ProductSizes.Where(ps => ps.ProductId == model.Product.Id).ToList();
+                _context.ProductColors.RemoveRange(oldColors);
+                _context.ProductSizes.RemoveRange(oldSizes);
+                foreach (var colorId in model.ColorIds)
                 {
-                    ProductId = model.Product.Id,
-                    ColorId = colorId
-                };
-                _context.ProductColors.Add(productColor); 
+                    var productColor = new ProductColor
+                    {
+                        ProductId = model.Product.Id,
+                        ColorId = colorId
+                    };
+                    _context.ProductColors.Add(productColor);
+                }
+                foreach (var sizeId in model.SizeIds)
+                {
+                    var productSize = new ProductSize
+                    {
+                        ProductId = model.Product.Id,
+                        SizeId = sizeId
+                    };
+                    _context.ProductSizes.Add(productSize);
+                }
+                await _context.SaveChangesAsync();
+                return RedirectToAction("GetProduct");
             }
-            foreach (var sizeId in model.SizeIds)
+            else
             {
-                var productSize = new ProductSize
-                {
-                    ProductId = model.Product.Id,
-                    SizeId = sizeId
-                };
-                _context.ProductSizes.Add(productSize);
+                return View(model);
             }
-            await _context.SaveChangesAsync();
-            return RedirectToAction("GetProduct");
         }
         public IActionResult Delete(int id)
         {
@@ -179,17 +188,17 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
         [HttpPost]
         public IActionResult AddAttribute(AttributeViewModel model)
         {
-          
-                var attribute = new ProductAttribute
-                {
-                    Name = model.productAttribute.Name,
-                    Value = model.productAttribute.Value,
-                    ProductId = model.ProductId,
-                    IsActive = model.productAttribute.IsActive
-                };
-                _context.ProductAttributes.Add(attribute);
-                _context.SaveChanges();
-            
+
+            var attribute = new ProductAttribute
+            {
+                Name = model.productAttribute.Name,
+                Value = model.productAttribute.Value,
+                ProductId = model.ProductId,
+                IsActive = model.productAttribute.IsActive
+            };
+            _context.ProductAttributes.Add(attribute);
+            _context.SaveChanges();
+
             return RedirectToAction("Attributes", new { id = model.ProductId });
 
         }

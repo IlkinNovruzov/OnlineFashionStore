@@ -17,7 +17,7 @@
           "clickable": true
         }
       }'>
-        @await Component.InvokeAsync("Slider");
+        @await Component.InvokeAsync("SliderVC");
 
         <div class="container">
             <div class="slideshow-pagination d-flex align-items-center position-absolute bottom-0 mb-5"></div>
@@ -111,6 +111,7 @@
 
     <div class="mb-4 pb-4 mb-xl-5 pb-xl-5"></div>
 
+    @await Component.InvokeAsync("TrendyProductsVC");
 
 
     <div class="mb-5 pb-1 pb-xl-5"></div>
