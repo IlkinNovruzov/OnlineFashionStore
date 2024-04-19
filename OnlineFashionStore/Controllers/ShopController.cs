@@ -63,15 +63,17 @@ namespace OnlineFashionStore.Controllers
 
         public async Task<IActionResult> ProductDetails(int id)
         {
+            var product = await _context.Products.Include(p => p.Images).Include(a => a.Attributes).Include(p => p.ProductColors).ThenInclude(pc => pc.Color).Include(p => p.ProductSizes).ThenInclude(ps => ps.Size).FirstOrDefaultAsync(p => p.Id == id);
             var user = await _userManager.GetUserAsync(User);
             var reviews = await _context.Reviews.Where(r => r.ProductId == id).Include(r => r.User).ToListAsync();
             var reviewCount = reviews != null ? reviews.Count : 0;
             var rating = reviews != null && reviews.Any() ? reviews.Average(r => r.Rating) : 0;
             var model = new ProductDetailsVM()
             {
-                Product = await _context.Products.Include(p => p.Images).Include(a => a.Attributes).Include(p => p.ProductColors).ThenInclude(pc => pc.Color).Include(p => p.ProductSizes).ThenInclude(ps => ps.Size).FirstOrDefaultAsync(p => p.Id == id),
+                Product = product,
                 Reviews = reviews,
                 Review = (user != null && User.Identity.IsAuthenticated) ? new Review { ProductId = id, UserId = user.Id } : null,
+                RelatedProducts = await _context.Products.Include(p => p.Category).Where(p => p.CategoryId == product.Id && p.Id != product.Id).Take(5).ToListAsync(),
                 NextProductId = _context.Products.Where(p => p.Id > id && p.IsActive).Min(p => (int?)p.Id),
                 PreviousProductId = _context.Products.Where(p => p.Id < id && p.IsActive).Max(p => (int?)p.Id),
                 ReviewCount = reviewCount,
@@ -89,7 +91,9 @@ namespace OnlineFashionStore.Controllers
             review.Date = DateTime.Now;
             _context.Reviews.Add(review);
             _context.SaveChanges();
-            return RedirectToAction("ProductDetails", new { id = id });
+            return Json("Added.");
+
+            //return RedirectToAction("ProductDetails", new { id = id });
         }
 
 

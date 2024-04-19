@@ -330,6 +330,7 @@
     <!-------------- Header Type 1 -------------->
     @await Component.InvokeAsync("NavbarVC")
 
+
     <!------------ End Header Type 1 ------------>
     @RenderBody();
     <!-------------- Footer Type 1 -------------->
@@ -826,11 +827,7 @@
                 }
             });
         }
-        // $(document).on('click', '.add-cart', function () {
-        //     var productId = $(this).data('product-id');
-        //     alert(productId);
-        //     addToCart(productId);
-        // });
+
 
         $(document).on('click', '.minus', function () {
             var productId = $(this).data('product-id');
@@ -847,6 +844,37 @@
         $(document).on('click', '.clearCart', function () {
             clearCart();
         });
+        //Wishlist
+        function Remove(productId) {
+            $.ajax({
+                url: '/WishList/Remove?id=' + productId,
+                type: 'POST',
+                success: function (response) {
+                    alert("hs");
+                    // $('#mainContent').load('/Cart/ShopCart #cartContent');
+                    // $('#cartDrawer').load('/Cart/ShopCart #cart-drawer');
+                    // $('.cartLogo').load('/Cart/ShopCart #cartlogo');
+                },
+                error: function () {
+                    alert('Failed.');
+                }
+            });
+        }
+        function Add(productId) {
+            $.ajax({
+                url: '/WishList/Add?id=' + productId,
+                type: 'POST',
+                success: function (response) {
+                    alert("hsss");
+                    // $('#mainContent').load('/Cart/ShopCart #cartContent');
+                    // $('#cartDrawer').load('/Cart/ShopCart #cart-drawer');
+                    // $('.cartLogo').load('/Cart/ShopCart #cartlogo');
+                },
+                error: function () {
+                    alert('Failed.');
+                }
+            });
+        }
     </script>
     <!-------------- Footer Scripts ------------->
     <script src="~/site/js/theme.js"></script>

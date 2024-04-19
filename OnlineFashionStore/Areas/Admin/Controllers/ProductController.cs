@@ -82,8 +82,6 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Edit(ProductViewModel model)
         {
-            if (ModelState.IsValid)
-            {
                 var product = await _context.Products.FirstOrDefaultAsync(p => p.Id == model.Product.Id);
                 product.Name = model.Product.Name;
                 product.Description = model.Product.Description;
@@ -119,11 +117,6 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
                 }
                 await _context.SaveChangesAsync();
                 return RedirectToAction("GetProduct");
-            }
-            else
-            {
-                return View(model);
-            }
         }
         public IActionResult Delete(int id)
         {
@@ -165,14 +158,14 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
         }
         public async Task<IActionResult> DeleteImage(int id)
         {
-            var p = await _context.Images.FirstOrDefaultAsync(p => p.Id == id);
+            var img = await _context.Images.FirstOrDefaultAsync(i => i.Id == id);
 
-            if (p != null)
+            if (img != null)
             {
-                _context.Images.Remove(p);
+                _context.Images.Remove(img);
             }
             _context.SaveChanges();
-            return RedirectToAction("Image", new { id = id });
+            return RedirectToAction("Image", new { id = img.ProductId });
 
         }
         [HttpGet]
@@ -214,16 +207,6 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
             return RedirectToAction("Attributes", new { id = id });
 
         }
-        [HttpPost]
-        public IActionResult Activation(int productId, bool isActive)
-        {
-            var product = _context.Products.Find(productId);
-            if (product != null)
-            {
-                product.IsActive = isActive;
-                _context.SaveChanges();
-            }
-            return RedirectToAction("GetProduct");
-        }
+       
     }
 }

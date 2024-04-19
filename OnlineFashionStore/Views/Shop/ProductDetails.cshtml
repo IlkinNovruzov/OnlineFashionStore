@@ -1,10 +1,10 @@
 ﻿@model ProductDetailsVM
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<AppUser> SignInManager
-<main>
+<main id="details">
 
     <div class="mb-md-1 pb-md-3"></div>
-    <section class="product-single container">
+    <section class="product-single container" id="detailSection">
         <div class="row">
             <div class="col-lg-7">
                 <div class="product-single__media" data-media-type="vertical-thumbnail">
@@ -58,19 +58,17 @@
                 </div>
                 <h1 class="product-single__name">@Model.Product.Name</h1>
                 <div class="product-single__rating">
-                    <div class="reviews-group d-flex">
+                    <div class="reviews-group d-flex" style="align-items:center">
+                        @Math.Round(Model.Rating, 1) 
                         @for (int i = 1; i <= Model.Rating; i++)
                         {
                             <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg"><use href="#icon_star" /></svg>
                         }
                     </div>
-                    <span class="reviews-note text-lowercase text-secondary ms-1">@Model.ReviewCount reviews</span>
+                    <span class="reviews-note text-lowercase text-secondary ms-1" id="reviewCount">@Model.ReviewCount reviews</span>
                 </div>
                 <div class="product-single__price">
                     <span class="current-price">$@Model.Product.Price</span>
-                </div>
-                <div class="product-single__short-desc">
-                    <p>@Model.Product.Description</p>
                 </div>
                 <form name="addtocart-form" method="post" asp-controller="Cart" asp-action="Add">
                     <input type="hidden" asp-for="CartItem.ProductId" value="@Model.Product.Id" />
@@ -132,20 +130,6 @@
                     <script src="js/details-disclosure.js" defer="defer"></script>
                     <script src="js/share.js" defer="defer"></script>
                 </div>
-                <div class="product-single__meta-info">
-                    <div class="meta-item">
-                        <label>SKU:</label>
-                        <span>N/A</span>
-                    </div>
-                    <div class="meta-item">
-                        <label>Categories:</label>
-                        <span>Casual & Urban Wear, Jackets, Men</span>
-                    </div>
-                    <div class="meta-item">
-                        <label>Tags:</label>
-                        <span>biker, black, bomber, leather</span>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="product-single__details-tab">
@@ -156,15 +140,15 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link nav-link_underscore" id="tab-additional-info-tab" data-bs-toggle="tab" href="#tab-additional-info" role="tab" aria-controls="tab-additional-info" aria-selected="false">Additional Information</a>
                 </li>
-                <li class="nav-item" role="presentation">
-                    <a class="nav-link nav-link_underscore" id="tab-reviews-tab" data-bs-toggle="tab" href="#tab-reviews" role="tab" aria-controls="tab-reviews" aria-selected="false">Reviews (2)</a>
+                <li class="nav-item" role="presentation" id="n-r">
+                    <a class="nav-link nav-link_underscore n-r-item" id="tab-reviews-tab" data-bs-toggle="tab" href="#tab-reviews" role="tab" aria-controls="tab-reviews" aria-selected="false">Reviews</a>
                 </li>
             </ul>
             <div class="tab-content">
                 <div class="tab-pane fade show active" id="tab-description" role="tabpanel" aria-labelledby="tab-description-tab">
                     <div class="product-single__description">
                         <h3 class="block-title mb-4">Sed do eiusmod tempor incididunt ut labore</h3>
-                        <p class="content">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                        <p class="content"> @Model.Product.Description </p>
                         <div class="row">
                             <div class="col-lg-6">
                                 <h3 class="block-title">Why choose product?</h3>
@@ -183,8 +167,6 @@
                                 </ol>
                             </div>
                         </div>
-                        <h3 class="block-title mb-0">Lining</h3>
-                        <p class="content">100% Polyester, Main: 100% Polyester.</p>
                     </div>
                 </div>
                 <div class="tab-pane fade" id="tab-additional-info" role="tabpanel" aria-labelledby="tab-additional-info-tab">
@@ -198,7 +180,12 @@
                         }
                         <div class="item">
                             <label class="h6">Size</label>
-                            <span>XS, S, M, L, XL</span>
+                            <span>
+                                @foreach (var item in Model.Product.ProductSizes)
+                                {
+                                    @item.Size.Name
+                                }
+                            </span>
                         </div>
                         <div class="item">
                             <label class="h6">Color</label>
@@ -212,75 +199,75 @@
                     </div>
                 </div>
                 <div class="tab-pane fade" id="tab-reviews" role="tabpanel" aria-labelledby="tab-reviews-tab">
-                    <h2 class="product-single__reviews-title">Reviews(@Model.Reviews.Count)</h2>
-                    <div class="product-single__reviews-list">
-                        @foreach (var item in Model.Reviews)
-                        {
-                            <div class="product-single__reviews-item">
-                                <div class="customer-review">
-                                    <div class="customer-name">
-                                        <h6>@item.User.UserName</h6>
-                                        <div class="reviews-group d-flex" style="margin-left:30px;">
-                                            @for (int i = 0; i < item.Rating; i++)
-                                            {
-                                                <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg"><use href="#icon_star" /></svg>
-                                            }
+                    <div id="list-form">
+                        <h2 class="product-single__reviews-title">Reviews(@Model.Reviews.Count)</h2>
+                        <div class="product-single__reviews-list" id="reviews">
+                            @foreach (var item in Model.Reviews)
+                            {
+                                <div class="product-single__reviews-item">
+                                    <div class="customer-review">
+                                        <div class="customer-name">
+                                            <h6>@item.User.UserName</h6>
+                                            <div class="reviews-group d-flex" style="margin-left:30px;">
+                                                @for (int i = 0; i < item.Rating; i++)
+                                                {
+                                                    <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg"><use href="#icon_star" /></svg>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="review-date">@item.Date.ToString("dd MMMM, yyyy")</div>
+                                        <div class="review-text">
+                                            <p> @item.Comment</p>
                                         </div>
                                     </div>
-                                    <div class="review-date">@item.Date.ToString("dd MMMM, yyyy")</div>
-                                    <div class="review-text">
-                                        <p> @item.Comment</p>
-                                    </div>
                                 </div>
+                            }
+                        </div>
+                        @if (SignInManager.IsSignedIn(User))
+                        {
+                            <div class="product-single__review-form">
+                                <form id="customer-review-form" method="post">
+                                    <input type="hidden" asp-for="Review.ProductId" value="@Model.Product.Id" />
+                                    <input type="hidden" asp-for="Review.UserId" value="@Model.Review.UserId" />
+
+                                    <div class="select-star-rating">
+                                        <label>Your rating *</label>
+                                        <span class="star-rating">
+                                            <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z" />
+                                            </svg>
+                                            <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z" />
+                                            </svg>
+                                            <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z" />
+                                            </svg>
+                                            <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z" />
+                                            </svg>
+                                            <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z" />
+                                            </svg>
+                                        </span>
+                                        <input type="hidden" asp-for="Review.Rating" id="form-input-rating" value="" />
+                                    </div>
+                                    <div class="mb-4">
+                                        <textarea id="form-input-review" asp-for="Review.Comment" class="form-control form-control_gray" placeholder="Your Review" cols="30" rows="8"></textarea>
+                                    </div>
+                                    <div class="form-action">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </form>
                             </div>
                         }
+                        else
+                        {
+                            <h5>
+                                Please log in to send a comment.
+                                <a asp-controller="Account" asp-action="Login">Login</a>
+                            </h5>
+                        }
                     </div>
-                    @if (SignInManager.IsSignedIn(User))
-                    {
-                        <div class="product-single__review-form">
-                            <form name="customer-review-form" method="post" asp-controller="Shop" asp-action="AddReview">
-                                <input type="hidden" asp-for="Review.ProductId" value="@Model.Product.Id" />
-                                <input type="hidden" asp-for="Review.UserId" value="@Model.Review.UserId" />
-                                <input type="hidden" asp-for="Review.Date" value="@DateTime.Now" />
-
-                                <div class="select-star-rating">
-                                    <label>Your rating *</label>
-                                    <span class="star-rating">
-                                        <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z" />
-                                        </svg>
-                                        <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z" />
-                                        </svg>
-                                        <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z" />
-                                        </svg>
-                                        <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z" />
-                                        </svg>
-                                        <svg class="star-rating__star-icon" width="12" height="12" fill="#ccc" viewBox="0 0 12 12" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M11.1429 5.04687C11.1429 4.84598 10.9286 4.76562 10.7679 4.73884L7.40625 4.25L5.89955 1.20312C5.83929 1.07589 5.72545 0.928571 5.57143 0.928571C5.41741 0.928571 5.30357 1.07589 5.2433 1.20312L3.73661 4.25L0.375 4.73884C0.207589 4.76562 0 4.84598 0 5.04687C0 5.16741 0.0870536 5.28125 0.167411 5.3683L2.60491 7.73884L2.02902 11.0871C2.02232 11.1339 2.01563 11.1741 2.01563 11.221C2.01563 11.3951 2.10268 11.5558 2.29688 11.5558C2.39063 11.5558 2.47768 11.5223 2.56473 11.4754L5.57143 9.89509L8.57813 11.4754C8.65848 11.5223 8.75223 11.5558 8.84598 11.5558C9.04018 11.5558 9.12054 11.3951 9.12054 11.221C9.12054 11.1741 9.12054 11.1339 9.11384 11.0871L8.53795 7.73884L10.9688 5.3683C11.0558 5.28125 11.1429 5.16741 11.1429 5.04687Z" />
-                                        </svg>
-                                    </span>
-                                    <input type="hidden" asp-for="Review.Rating" id="form-input-rating" value="" />
-                                </div>
-                                <div class="mb-4">
-                                    <textarea id="form-input-review" asp-for="Review.Comment" class="form-control form-control_gray" placeholder="Your Review" cols="30" rows="8"></textarea>
-                                </div>
-                                <div class="form-action">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                </div>
-                            </form>
-                        </div>
-                    }
-                    else
-                    {
-                        <h5>
-                            Please log in to send a comment.
-                            <a asp-controller="Account" asp-action="Login">Login</a>
-                        </h5>
-                    }
-
                 </div>
             </div>
         </div>
@@ -324,193 +311,30 @@
             }
           }'>
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide product-card">
-                        <div class="pc__img-wrapper">
-                            <a href="product1_simple.html">
-                                <img loading="lazy" src="../images/products/product_3.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img">
-                                <img loading="lazy" src="../images/products/product_3-1.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img pc__img-second">
-                            </a>
-                            <button class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium js-add-cart js-open-aside" data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
-                        </div>
-
-                        <div class="pc__info position-relative">
-                            <p class="pc__category">Dresses</p>
-                            <h6 class="pc__title"><a href="product1_simple.html">Kirby T-Shirt</a></h6>
-                            <div class="product-card__price d-flex">
-                                <span class="money price">$17</span>
+                    @foreach (var item in Model.RelatedProducts)
+                    {
+                        <div class="swiper-slide product-card">
+                            <div class="pc__img-wrapper">
+                                <a asp-controller="Shop" asp-action="ProductDetails" asp-route-id="@item.Id">
+                                    <img loading="lazy" src="~/images/products/@item.Images[0].ImageUrl" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img">
+                                    <img loading="lazy" src="~/images/products/@item.Images[0].ImageUrl" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img pc__img-second">
+                                </a>
+                                <a asp-controller="Shop" asp-action="ProductDetails" asp-route-id="@item.Id" class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium" title="Details" data-product-id="@item.Id">Details</a>
                             </div>
 
-                            <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide product-card">
-                        <div class="pc__img-wrapper">
-                            <a href="product1_simple.html">
-                                <img loading="lazy" src="../images/products/product_1.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img">
-                                <img loading="lazy" src="../images/products/product_1-1.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img pc__img-second">
-                            </a>
-                            <button class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium js-add-cart js-open-aside" data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
-                        </div>
-
-                        <div class="pc__info position-relative">
-                            <p class="pc__category">Dresses</p>
-                            <h6 class="pc__title"><a href="product1_simple.html">Cropped Faux Leather Jacket</a></h6>
-                            <div class="product-card__price d-flex">
-                                <span class="money price">$29</span>
-                            </div>
-                            <div class="product-card__review d-flex align-items-center">
-                                <div class="reviews-group d-flex">
-                                    <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg"><use href="#icon_star" /></svg>
-                                    <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg"><use href="#icon_star" /></svg>
-                                    <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg"><use href="#icon_star" /></svg>
-                                    <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg"><use href="#icon_star" /></svg>
-                                    <svg class="review-star" viewBox="0 0 9 9" xmlns="http://www.w3.org/2000/svg"><use href="#icon_star" /></svg>
+                            <div class="pc__info position-relative">
+                                <p class="pc__category">@item.Category.Name</p>
+                                <h6 class="pc__title">@item.Name</h6>
+                                <div class="product-card__price d-flex">
+                                    <span class="money price">$@item.Price</span>
                                 </div>
-                                <span class="reviews-note text-lowercase text-secondary ms-1">8k+ reviews</span>
+
+                                <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
+                                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
+                                </button>
                             </div>
-
-                            <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
-                            </button>
                         </div>
-                    </div>
-
-                    <div class="swiper-slide product-card">
-                        <div class="pc__img-wrapper">
-                            <a href="product1_simple.html">
-                                <img loading="lazy" src="../images/products/product_2.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img">
-                                <img loading="lazy" src="../images/products/product_2-1.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img pc__img-second">
-                            </a>
-                            <button class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium js-add-cart js-open-aside" data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
-                        </div>
-
-                        <div class="pc__info position-relative">
-                            <p class="pc__category">Dresses</p>
-                            <h6 class="pc__title"><a href="product1_simple.html">Calvin Shorts</a></h6>
-                            <div class="product-card__price d-flex">
-                                <span class="money price">$62</span>
-                            </div>
-
-                            <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide product-card">
-                        <div class="pc__img-wrapper">
-                            <a href="product1_simple.html">
-                                <img loading="lazy" src="../images/products/product_6.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img">
-                                <img loading="lazy" src="../images/products/product_6-1.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img pc__img-second">
-                            </a>
-                            <button class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium js-add-cart js-open-aside" data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
-                        </div>
-
-                        <div class="pc__info position-relative">
-                            <p class="pc__category">Dresses</p>
-                            <h6 class="pc__title"><a href="product1_simple.html">Shirt In Botanical Cheetah Print</a></h6>
-                            <div class="product-card__price d-flex">
-                                <span class="money price">$62</span>
-                            </div>
-
-                            <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide product-card">
-                        <div class="pc__img-wrapper">
-                            <a href="product1_simple.html">
-                                <img loading="lazy" src="../images/products/product_7.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img">
-                                <img loading="lazy" src="../images/products/product_7-1.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img pc__img-second">
-                            </a>
-                            <button class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium js-add-cart js-open-aside" data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
-                        </div>
-
-                        <div class="pc__info position-relative">
-                            <p class="pc__category">Dresses</p>
-                            <h6 class="pc__title"><a href="product1_simple.html">Cotton Jersey T-Shirt</a></h6>
-                            <div class="product-card__price d-flex">
-                                <span class="money price">$17</span>
-                            </div>
-
-                            <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide product-card">
-                        <div class="pc__img-wrapper">
-                            <a href="product1_simple.html">
-                                <img loading="lazy" src="../images/products/product_4.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img">
-                                <img loading="lazy" src="../images/products/product_4-1.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img pc__img-second">
-                            </a>
-                            <button class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium js-add-cart js-open-aside" data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
-                        </div>
-
-                        <div class="pc__info position-relative">
-                            <p class="pc__category">Dresses</p>
-                            <h6 class="pc__title"><a href="product1_simple.html">Cableknit Shawl</a></h6>
-                            <div class="product-card__price d-flex">
-                                <span class="money price price-old">$129</span>
-                                <span class="money price price-sale">$99</span>
-                            </div>
-
-                            <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide product-card">
-                        <div class="pc__img-wrapper">
-                            <a href="product1_simple.html">
-                                <img loading="lazy" src="../images/products/product_5.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img">
-                                <img loading="lazy" src="../images/products/product_5-1.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img pc__img-second">
-                            </a>
-                            <button class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium js-add-cart js-open-aside" data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
-                        </div>
-
-                        <div class="pc__info position-relative">
-                            <p class="pc__category">Dresses</p>
-                            <h6 class="pc__title"><a href="product1_simple.html">Colorful Jacket</a></h6>
-                            <div class="product-card__price d-flex">
-                                <span class="money price">$29</span>
-                            </div>
-
-                            <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="swiper-slide product-card">
-                        <div class="pc__img-wrapper">
-                            <a href="product1_simple.html">
-                                <img loading="lazy" src="../images/products/product_8.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img">
-                                <img loading="lazy" src="../images/products/product_8-1.jpg" width="330" height="400" alt="Cropped Faux leather Jacket" class="pc__img pc__img-second">
-                            </a>
-                            <button class="pc__atc btn anim_appear-bottom btn position-absolute border-0 text-uppercase fw-medium js-add-cart js-open-aside" data-aside="cartDrawer" title="Add To Cart">Add To Cart</button>
-                        </div>
-
-                        <div class="pc__info position-relative">
-                            <p class="pc__category">Dresses</p>
-                            <h6 class="pc__title"><a href="product1_simple.html">Zessi Dresses</a></h6>
-                            <div class="product-card__price d-flex">
-                                <span class="money price price-old">$129</span>
-                                <span class="money price price-sale">$99</span>
-                            </div>
-
-                            <button class="pc__btn-wl position-absolute top-0 end-0 bg-transparent border-0 js-add-wishlist" title="Add To Wishlist">
-                                <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><use href="#icon_heart" /></svg>
-                            </button>
-                        </div>
-                    </div>
+                    }
                 </div><!-- /.swiper-wrapper -->
             </div><!-- /.swiper-container js-swiper-slider -->
 
@@ -529,6 +353,29 @@
 </main>
 @section Scripts {
     <script>
+        $(document).ready(function () {
+            $('#customer-review-form').submit(function (event) {
+                event.preventDefault(); // Formun varsayılan davranışını engelle
+                var formData = $(this).serialize(); // Form verilerini al
+
+                $.ajax({
+                    url: '/Shop/AddReview',
+                    type: "POST",
+                    data: formData,
+                    success: function (response) {
+                        $('#tab-reviews').load('/Shop/ProductDetails?id=' + @Model.Product.Id + ' #list-form');
+                        $('#reviewCount').load('/Shop/ProductDetails?id=' + @Model.Product.Id + ' #reviewCount');
+                        //  $('#n-r').load('/Shop/ProductDetails?id=' + @Model.Product.Id + ' .n-r-item);
+
+                    },
+                    error: function (xhr, status, error) {
+                        // İsteğin başarısız olduğu durumda yapılacak işlemler
+                        console.error(xhr.responseText);
+                        // Hata mesajını kullanıcıya göstermek için uygun bir yöntem
+                    }
+                });
+            });
+        });
         const colorRadios = document.querySelectorAll('.color-radio');
 
         colorRadios.forEach(radio => {

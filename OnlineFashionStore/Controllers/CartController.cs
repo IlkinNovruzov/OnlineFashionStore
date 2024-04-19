@@ -12,7 +12,6 @@ namespace OnlineFashionStore.Controllers
         public CartController(AppDbContext context)
         {
             _context = context;
-
         }
         public IActionResult ShopCart()
         {
