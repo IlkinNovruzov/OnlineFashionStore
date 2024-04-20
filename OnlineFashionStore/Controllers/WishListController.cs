@@ -11,9 +11,11 @@ namespace OnlineFashionStore.Controllers
     public class WishListController : Controller
     {
         private readonly AppDbContext _context;
-        public WishListController(AppDbContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public WishListController(AppDbContext context,IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
+            _httpContextAccessor = httpContextAccessor;
         }
         public IActionResult WishProducts()
         {
@@ -29,7 +31,7 @@ namespace OnlineFashionStore.Controllers
             {
                 wishList.Add(product);
             }
-            HttpContext.Session.SetString("Wijkjsh", JsonConvert.SerializeObject(wishList));
+            _httpContextAccessor.HttpContext.Session.SetString("Wish", JsonConvert.SerializeObject(wishList));
 
             TempData["Success"] = "The product has been added!";
             return Json(new { success = true });

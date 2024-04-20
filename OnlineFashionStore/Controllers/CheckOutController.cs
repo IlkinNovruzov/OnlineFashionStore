@@ -8,6 +8,8 @@ using OnlineFashionStore.Models;
 using Microsoft.AspNetCore.Identity;
 using Stripe.Climate;
 using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using Stripe;
 
 namespace OnlineFashionStore.Controllers
 {
@@ -24,9 +26,19 @@ namespace OnlineFashionStore.Controllers
         private static Models.DataModels.Order tempOrder;
         private static decimal total=0;
         [HttpPost]
-        public IActionResult Checkout(Models.DataModels.Order order)
+        public IActionResult Checkout(Models.DataModels.Order order,string code)
         {
             var list = HttpContext.Session.GetJson<List<CartItem>>("Cart");
+            decimal prcntg = 0;
+            if (list == null)
+            {
+                return RedirectToAction("ShopCart", "Cart");
+            }
+            if (code!=null)
+            {
+            var proCode = _context.Promotions.FirstOrDefault(p=>p.Code==code);
+                prcntg = proCode == null ? 0 : proCode.DiscountPercentage;
+            }
             tempOrder = order;
             var domain = "https://localhost:44325/";
             var options = new SessionCreateOptions()
@@ -42,16 +54,16 @@ namespace OnlineFashionStore.Controllers
                 {
                     PriceData = new SessionLineItemPriceDataOptions
                     {
-                        UnitAmountDecimal = item.Total*100,
+                        UnitAmountDecimal = item.Price*100*(1-prcntg/100),
                         Currency = "usd",
                         ProductData = new SessionLineItemPriceDataProductDataOptions
                         {
-                            Name = item.ProductName.ToString()
+                            Name = item.ProductName
                         }
                     },
                     Quantity = item.Quantity
                 };
-                total += item.Total;
+                total +=  item.Total*(1-prcntg/100);
                 options.LineItems.Add(sessionListItem);
             }
             var service = new SessionService();

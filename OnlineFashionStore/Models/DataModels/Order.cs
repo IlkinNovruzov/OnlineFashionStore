@@ -28,6 +28,8 @@ namespace OnlineFashionStore.Models.DataModels
         public string Address { get; set; }
         [Required]
         public string PaymentMethod { get; set; }
+        [Required]
+        public string Shipping { get; set; }
         public int UserId { get; set; }
         public AppUser User { get; set; }
 

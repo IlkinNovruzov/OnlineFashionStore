@@ -26,6 +26,7 @@ namespace OnlineFashionStore.Models
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Promotion> Promotions { get; set; }
+        public DbSet<About> Abouts { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
