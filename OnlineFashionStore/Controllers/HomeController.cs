@@ -28,14 +28,7 @@ namespace OnlineFashionStore.Controllers
             await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
             return RedirectToAction("Index", "Home");
         }
-        public IActionResult About()
-        {
-            return View();
-        }
-        public IActionResult BlogList()
-        {
-            return View(_context.Blogs.ToList());
-        }
+       
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

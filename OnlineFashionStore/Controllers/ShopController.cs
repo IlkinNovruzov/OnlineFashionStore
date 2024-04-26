@@ -20,7 +20,7 @@ namespace OnlineFashionStore.Controllers
         public async Task<IActionResult> GetProducts(int? page)
         {
             var pageNumber = page ?? 1;
-            var pageSize = 1;
+            var pageSize = 6;
             var model = new ShopViewModel()
             {
                 Products = await _context.Products.Include(p => p.Images).Include(x => x.Category).Where(p => p.IsActive).ToPagedListAsync(pageNumber, pageSize),
@@ -32,10 +32,9 @@ namespace OnlineFashionStore.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> GetProducts(int? page, int[] ctgIds, int[] colorIds, int[] sizeIds, int min, int max)
+        public async Task<IActionResult> GetProducts( int[] ctgIds, int[] colorIds, int[] sizeIds, int min, int max)
         {
-            var pageNumber = page ?? 1;
-            var pageSize = 1;
+        
             var query = _context.Products.Include(p => p.Category).Include(p => p.Images)
                 .Include(p => p.ProductColors).ThenInclude(pc => pc.Color)
                 .Include(p => p.ProductSizes).ThenInclude(ps => ps.Size)
@@ -57,7 +56,7 @@ namespace OnlineFashionStore.Controllers
             {
                 query = query.Where(p => (p.Price <= max && p.Price >= min));
             }
-            var products = await query.ToPagedListAsync(pageNumber, pageSize);
+            var products = await query.ToListAsync();
             return PartialView("_ProductList", products);
         }
 
