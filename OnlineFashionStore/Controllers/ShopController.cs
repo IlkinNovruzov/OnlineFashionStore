@@ -34,7 +34,7 @@ namespace OnlineFashionStore.Controllers
         [HttpPost]
         public async Task<IActionResult> GetProducts(int[] ctgIds, int[] colorIds, int[] sizeIds, int min, int max)
         {
-        
+
             var query = _context.Products.Include(p => p.Category).Include(p => p.Images)
                 .Include(p => p.ProductColors).ThenInclude(pc => pc.Color)
                 .Include(p => p.ProductSizes).ThenInclude(ps => ps.Size)
