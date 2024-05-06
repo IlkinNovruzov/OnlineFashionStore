@@ -70,14 +70,14 @@ namespace OnlineFashionStore.Areas.Admin.Controllers
                         string nameImg = await FileExtensions.SaveAsync(newSlider.ImgFile, "sliders");
                         slideritem.ImgFile = newSlider.ImgFile;
                         slideritem.Image = nameImg;
-                        
+
                     }
                     else
                     {
                         return RedirectToAction("Edit");
                     }
                 }
-               
+
                 slideritem.Title = newSlider.Title;
                 slideritem.Description = newSlider.Description;
                 slideritem.Name = newSlider.Name;
