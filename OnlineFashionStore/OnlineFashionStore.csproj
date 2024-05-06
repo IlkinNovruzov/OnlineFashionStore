@@ -12,9 +12,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="Areas\Admin\Views\Blog\Add.cshtml" />
-    <None Include="Areas\Admin\Views\Blog\Blog.cshtml" />
-    <None Include="Areas\Admin\Views\Blog\Edit.cshtml" />
     <None Include="Views\Account\Confirmation.cshtml" />
     <None Include="Views\Home\Index.cshtml" />
     <None Include="Views\Home\Privacy.cshtml" />

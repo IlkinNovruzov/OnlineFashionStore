@@ -32,7 +32,7 @@ namespace OnlineFashionStore.Controllers
             return View(model);
         }
         [HttpPost]
-        public async Task<IActionResult> GetProducts( int[] ctgIds, int[] colorIds, int[] sizeIds, int min, int max)
+        public async Task<IActionResult> GetProducts(int[] ctgIds, int[] colorIds, int[] sizeIds, int min, int max)
         {
         
             var query = _context.Products.Include(p => p.Category).Include(p => p.Images)
