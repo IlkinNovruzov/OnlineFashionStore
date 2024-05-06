@@ -20,7 +20,7 @@ namespace OnlineFashionStore.Controllers
         public async Task<IActionResult> GetProducts(int? page)
         {
             var pageNumber = page ?? 1;
-            var pageSize = 6;
+            var pageSize = 12;
             var model = new ShopViewModel()
             {
                 Products = await _context.Products.Include(p => p.Images).Include(x => x.Category).Where(p => p.IsActive).ToPagedListAsync(pageNumber, pageSize),
